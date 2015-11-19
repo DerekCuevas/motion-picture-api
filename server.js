@@ -19,7 +19,7 @@ app.set('view engine', '.hbs');
 // other app presets / middleware
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 3000);
-app.use(express.static('./build'));
+app.use(express.static(__dirname + '/../static'));
 
 app.use(bodyParser.json());
 app.use(morgan('dev'));
