@@ -64,6 +64,7 @@ export default class Movies {
     }
 
     filter(genres = vector(), category = '', text = '') {
+        // filtering movies by fuzzy text matches
         return filter((movie) => {
             if (!text.length) {
                 return true;
@@ -73,6 +74,8 @@ export default class Movies {
             }
             const matches = map(val => fuzzy(val, text), vals(movie));
             return some(match => match !== false, matches);
+
+        // filtering movies by genres
         }, filter((movie) => {
             if (!count(genres)) {
                 return true;

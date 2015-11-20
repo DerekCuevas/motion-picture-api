@@ -7,9 +7,9 @@ import configureRoutes from './routes.js';
 
 const app = express();
 
-// rendering engine config, maybe move views to root dir?
+// view engine config, maybe move views to root dir?
 app.engine('.hbs', exphbs({
-    defaultLayout: 'index',
+    defaultLayout: 'main',
     extname: '.hbs',
     layoutsDir: './api/views/layouts/',
 }));
@@ -18,9 +18,10 @@ app.set('view engine', '.hbs');
 
 // other app presets / middleware
 app.disable('x-powered-by');
-app.set('port', process.env.PORT || 3000);
 
+app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/../static'));
+
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
