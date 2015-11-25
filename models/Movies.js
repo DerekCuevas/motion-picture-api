@@ -7,15 +7,13 @@ import {
     partial, equals, count, into,
     vector, vals, map, some,
 } from 'mori';
+import contains from '../util/contains';
 import fuzzy from '../util/fuzzy';
 
 // FIXME: make this absolute w/ __dirname?
 const MOVIE_FILE = './resources/movies.json';
 
-function contains(sequence, item) {
-    return count(filter(partial(equals, item), sequence)) !== 0;
-}
-
+// hide or expose mori?
 export default class Movies {
     constructor() {
         this.movies = toClj(JSON.parse(fs.readFileSync(MOVIE_FILE)));
