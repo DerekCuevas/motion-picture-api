@@ -43,22 +43,23 @@ function validate(movie, fields) {
     const val = Joi.validate(movie, fields, {
         abortEarly: false,
     });
-    const result = {};
 
     if (val.error) {
-        result.error = true;
-        result.message = 'Validation Failed';
-        result.errors = val.error.details.map((f) => {
-            return {
-                field: f.path,
-                message: f.message,
-            };
-        });
-    } else {
-        result.error = false;
-        result.movie = val.value;
+        return {
+            error: true,
+            message: 'Validation Failed',
+            errors: val.error.details.map((err) => {
+                return {
+                    field: err.path,
+                    message: err.message,
+                };
+            }),
+        };
     }
-    return result;
+    return {
+        error: false,
+        movie: val.value,
+    };
 }
 
 // GET - / (serves the main app)
@@ -120,7 +121,6 @@ export function createMovie(req, res) {
         req.body.genre = req.body.genre.toLowerCase().trim();
     }
     const val = validate(req.body, schema);
-    let newMovie;
 
     if (val.error) {
         return res.status(422).json({
@@ -129,7 +129,8 @@ export function createMovie(req, res) {
         });
     }
 
-    newMovie = toJs(movies.createMovie(toClj(val.movie)));
+    const newMovie = toJs(movies.createMovie(toClj(val.movie)));
+
     movies.save((err) => {
         if (err) {
             throw err;
@@ -147,9 +148,7 @@ export function updateMovie(req, res) {
         req.body.genre = req.body.genre.toLowerCase().trim();
     }
 
-    // FIXME: no more _
     const val = validate(req.body, _.pick(schema, _.keys(req.body)));
-    let updatedMovie;
 
     if (val.error) {
         return res.status(422).json({
@@ -158,7 +157,8 @@ export function updateMovie(req, res) {
         });
     }
 
-    updatedMovie = toJs(movies.updateMovie(sku, toClj(val.movie)));
+    const updatedMovie = toJs(movies.updateMovie(sku, toClj(val.movie)));
+
     if (!updatedMovie) {
         res.status(404).json({
             message: `The movie "${sku}" does not exist`,

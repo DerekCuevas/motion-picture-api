@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export const genres = [
-    'sci-Fi and fantasy',
+    'sci-fi and fantasy',
     'comedy',
     'action and adventure',
     'drama',
