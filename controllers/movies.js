@@ -120,6 +120,7 @@ export function createMovie(req, res) {
     if (req.body.genre) {
         req.body.genre = req.body.genre.toLowerCase().trim();
     }
+
     const val = validate(req.body, schema);
 
     if (val.error) {
