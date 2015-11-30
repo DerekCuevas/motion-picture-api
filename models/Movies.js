@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import shortid from 'shortid';
 import {
     toClj, toJs, hashMap, assoc,
@@ -10,17 +11,16 @@ import {
 import contains from '../util/contains';
 import fuzzy from '../util/fuzzy';
 
-// FIXME: make this absolute w/ __dirname?
-const MOVIE_FILE = './resources/movies.json';
+const MOVIES_FILE = path.join(__dirname, '../../resources/movies.json');
 
 // FIXME: hide or expose mori?
 export default class Movies {
     constructor() {
-        this.movies = toClj(JSON.parse(fs.readFileSync(MOVIE_FILE)));
+        this.movies = toClj(JSON.parse(fs.readFileSync(MOVIES_FILE)));
     }
 
     save(cb) {
-        fs.writeFile(MOVIE_FILE, JSON.stringify(toJs(this.movies)), cb);
+        fs.writeFile(MOVIES_FILE, JSON.stringify(toJs(this.movies), null, 4), cb);
     }
 
     // it might be better to index movies by sku
