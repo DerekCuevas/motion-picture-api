@@ -20,7 +20,7 @@ app.set('view engine', '.hbs');
 app.disable('x-powered-by');
 
 app.set('port', process.env.PORT || 3000);
-app.use(express.static(__dirname + '/../static'));
+app.use(express.static('./static'));
 
 app.use(bodyParser.json());
 app.use(morgan('dev'));

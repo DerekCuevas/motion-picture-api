@@ -13,7 +13,7 @@ import fuzzy from '../util/fuzzy';
 // FIXME: make this absolute w/ __dirname?
 const MOVIE_FILE = './resources/movies.json';
 
-// hide or expose mori?
+// FIXME: hide or expose mori?
 export default class Movies {
     constructor() {
         this.movies = toClj(JSON.parse(fs.readFileSync(MOVIE_FILE)));
