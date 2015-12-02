@@ -8,6 +8,7 @@ import {
     partial, equals, count, into,
     vector, vals, map, some,
 } from 'mori';
+
 import contains from '../util/contains';
 import fuzzy from '../util/fuzzy';
 
@@ -67,9 +68,11 @@ export default class Movies {
             if (!text.length) {
                 return true;
             }
+
             if (category) {
                 return fuzzy(get(movie, category), text);
             }
+
             const matches = map(val => fuzzy(val, text), vals(movie));
             return some(match => match !== false, matches);
 
@@ -78,6 +81,7 @@ export default class Movies {
             if (!count(genres)) {
                 return true;
             }
+
             return contains(genres, get(movie, 'genre'));
         }, this.movies));
     }

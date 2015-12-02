@@ -56,6 +56,7 @@ function validate(movie, fields) {
             }),
         };
     }
+
     return {
         error: false,
         movie: val.value,
@@ -90,6 +91,7 @@ export function queryMovies(req, res) {
         query.q ? query.q.trim() : ''
     ));
 
+    // FIXME: don't set links if pages empty?
     res.links(getPages(req, query, result));
     res.json({
         movies: result.movies,
@@ -112,6 +114,7 @@ export function getMovie(req, res) {
             message: `The movie "${sku}" does not exist`,
         });
     }
+
     res.json(movie);
 }
 
