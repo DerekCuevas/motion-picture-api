@@ -76,6 +76,8 @@ export function index(req, res) {
 // GET - /api/movies
 export function queryMovies(req, res) {
     const query = req.query;
+    const limit = parseInt(query.limit, 10);
+    const offset = parseInt(query.offset, 10);
 
     if (query.genres) {
         query.genres = query.genres.split(',').map((genre) => {
@@ -84,8 +86,8 @@ export function queryMovies(req, res) {
     }
 
     const result = toJs(movies.queryMovies(
-        parseInt(query.limit, 10) || DEFAULT_PAGE_LIMIT,
-        parseInt(query.offset, 10) || DEFAULT_PAGE_OFFSET,
+        (limit * Math.sign(limit)) || DEFAULT_PAGE_LIMIT,
+        (offset * Math.sign(offset)) || DEFAULT_PAGE_OFFSET,
         toClj(query.genres),
         query.category ? query.category.toLowerCase().trim() : '',
         query.q ? query.q.trim() : ''
