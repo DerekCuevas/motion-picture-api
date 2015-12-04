@@ -7,13 +7,11 @@ import configureRoutes from './routes.js';
 
 const app = express();
 
-// view engine config, maybe move views to root dir?
+// view engine config
 app.engine('.hbs', exphbs({
     defaultLayout: 'main',
     extname: '.hbs',
-    layoutsDir: './api/views/layouts/',
 }));
-app.set('views', './api/views');
 app.set('view engine', '.hbs');
 
 // other app presets / middleware
