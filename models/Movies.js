@@ -24,35 +24,35 @@ export default class Movies {
         fs.writeFile(MOVIES_FILE, JSON.stringify(toJs(this.movies), null, 4), cb);
     }
 
-    // it might be better to index movies by sku
-    getMovie(sku = '') {
+    // it might be better to index movies by id
+    getMovie(id = '') {
         return first(filter((movie) => {
-            return get(movie, 'sku') === sku;
+            return get(movie, 'id') === id;
         }, this.movies));
     }
 
     createMovie(movie = hashMap()) {
-        const newMovie = assoc(movie, 'sku', shortid.generate());
+        const newMovie = assoc(movie, 'id', shortid.generate());
         this.movies = conj(this.movies, newMovie);
         return newMovie;
     }
 
-    updateMovie(sku = '', fields = hashMap()) {
-        const movie = this.getMovie(sku);
+    updateMovie(id = '', fields = hashMap()) {
+        const movie = this.getMovie(id);
 
         if (!movie) {
             return undefined;
         }
 
-        const updated = merge(movie, dissoc(fields, 'sku'));
+        const updated = merge(movie, dissoc(fields, 'id'));
         const removed = remove(partial(equals, movie), this.movies);
 
         this.movies = conj(removed, updated);
         return updated;
     }
 
-    deleteMovie(sku = '') {
-        const movie = this.getMovie(sku);
+    deleteMovie(id = '') {
+        const movie = this.getMovie(id);
 
         if (!movie) {
             return undefined;

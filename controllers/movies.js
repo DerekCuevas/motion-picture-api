@@ -93,8 +93,12 @@ export function queryMovies(req, res) {
         query.q ? query.q.trim() : ''
     ));
 
-    // FIXME: don't set links if pages empty?
-    res.links(getPages(req, query, result));
+    const pages = getPages(req, query, result);
+
+    if (pages.next || pages.prev) {
+        res.links(pages);
+    }
+
     res.json({
         movies: result.movies,
         total: result.total,
@@ -106,14 +110,14 @@ export function getGenres(req, res) {
     res.json(genres);
 }
 
-// GET - /api/movies/:sku
+// GET - /api/movies/:id
 export function getMovie(req, res) {
-    const sku = req.params.sku;
-    const movie = toJs(movies.getMovie(sku));
+    const id = req.params.id;
+    const movie = toJs(movies.getMovie(id));
 
     if (!movie) {
         return res.status(404).json({
-            message: `The movie "${sku}" does not exist`,
+            message: `The movie "${id}" does not exist`,
         });
     }
 
@@ -141,14 +145,14 @@ export function createMovie(req, res) {
         if (err) {
             throw err;
         }
-        res.location(`/api/movies/${newMovie.sku}`);
+        res.location(`/api/movies/${newMovie.id}`);
         res.status(201).json(newMovie);
     });
 }
 
-// PUT - /api/movies/:sku
+// PUT - /api/movies/:id
 export function updateMovie(req, res) {
-    const sku = req.params.sku;
+    const id = req.params.id;
 
     if (req.body.genre) {
         req.body.genre = req.body.genre.toLowerCase().trim();
@@ -163,37 +167,37 @@ export function updateMovie(req, res) {
         });
     }
 
-    const updatedMovie = toJs(movies.updateMovie(sku, toClj(val.movie)));
+    const updatedMovie = toJs(movies.updateMovie(id, toClj(val.movie)));
 
     if (!updatedMovie) {
-        res.status(404).json({
-            message: `The movie "${sku}" does not exist`,
-        });
-    } else {
-        movies.save((err) => {
-            if (err) {
-                throw err;
-            }
-            res.json(updatedMovie);
+        return res.status(404).json({
+            message: `The movie "${id}" does not exist`,
         });
     }
+
+    movies.save((err) => {
+        if (err) {
+            throw err;
+        }
+        res.json(updatedMovie);
+    });
 }
 
-// DELETE - /api/movies/:sku
+// DELETE - /api/movies/:id
 export function deleteMovie(req, res) {
-    const sku = req.params.sku;
-    const removed = toJs(movies.deleteMovie(sku));
+    const id = req.params.id;
+    const removed = toJs(movies.deleteMovie(id));
 
     if (!removed) {
         res.status(404).json({
-            message: `The movie "${sku}" does not exist`,
-        });
-    } else {
-        movies.save((err) => {
-            if (err) {
-                throw err;
-            }
-            res.status(204).json();
+            message: `The movie "${id}" does not exist`,
         });
     }
+
+    movies.save((err) => {
+        if (err) {
+            throw err;
+        }
+        res.status(204).json();
+    });
 }

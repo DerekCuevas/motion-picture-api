@@ -7,8 +7,8 @@ export default function configureRoutes(app) {
     // The API routes, move /api behind express router?
     app.get('/api/movies', movies.queryMovies);
     app.get('/api/movies/genres', movies.getGenres);
-    app.get('/api/movies/:sku', movies.getMovie);
+    app.get('/api/movies/:id', movies.getMovie);
     app.post('/api/movies', movies.createMovie);
-    app.put('/api/movies/:sku', movies.updateMovie);
-    app.delete('/api/movies/:sku', movies.deleteMovie);
+    app.put('/api/movies/:id', movies.updateMovie);
+    app.delete('/api/movies/:id', movies.deleteMovie);
 }
