@@ -67,6 +67,7 @@ function validate(movie, fields) {
 export function index(req, res) {
     const seed = toJs(movies.queryMovies(DEFAULT_PAGE_LIMIT, DEFAULT_PAGE_OFFSET));
     seed.pages = getPages(req, {}, seed);
+    seed.genres = genres;
 
     res.render('app', {
         seed: JSON.stringify(seed),
