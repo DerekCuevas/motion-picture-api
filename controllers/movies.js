@@ -190,7 +190,7 @@ export function deleteMovie(req, res) {
     const removed = toJs(movies.deleteMovie(id));
 
     if (!removed) {
-        res.status(404).json({
+        return res.status(404).json({
             message: `The movie "${id}" does not exist`,
         });
     }
