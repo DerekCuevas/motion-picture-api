@@ -125,6 +125,8 @@ export function getMovie(req, res) {
     res.json(movie);
 }
 
+// TODO: add created at & updated at keys
+
 // POST - /api/movies
 export function createMovie(req, res) {
     if (req.body.genre) {
