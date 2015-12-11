@@ -14,7 +14,7 @@ import fuzzy from '../util/fuzzy';
 
 const MOVIES_FILE = path.join(__dirname, '../../resources/movies.json');
 
-// FIXME: hide or expose mori?
+// FIXME: hide or expose mori? - hide it
 export default class Movies {
     constructor() {
         this.movies = toClj(JSON.parse(fs.readFileSync(MOVIES_FILE)));

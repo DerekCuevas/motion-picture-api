@@ -125,8 +125,6 @@ export function getMovie(req, res) {
     res.json(movie);
 }
 
-// TODO: add created at & updated at keys
-
 // POST - /api/movies
 export function createMovie(req, res) {
     if (req.body.genre) {
@@ -141,6 +139,10 @@ export function createMovie(req, res) {
             errors: val.errors,
         });
     }
+
+    const now = (new Date()).toISOString();
+    val.movie.created_at = now;
+    val.movie.updated_at = now;
 
     const newMovie = toJs(movies.createMovie(toClj(val.movie)));
 
@@ -170,6 +172,7 @@ export function updateMovie(req, res) {
         });
     }
 
+    val.movie.updated_at = (new Date()).toISOString();
     const updatedMovie = toJs(movies.updateMovie(id, toClj(val.movie)));
 
     if (!updatedMovie) {
