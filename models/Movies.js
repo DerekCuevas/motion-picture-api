@@ -10,12 +10,13 @@ import {
 } from 'mori';
 
 import contains from '../util/contains';
-import fuzzy from '../util/fuzzy';
+import strict from '../util/strict';
 
 const MOVIES_FILE = path.join(__dirname, '../../resources/movies.json');
 
 export default class Movies {
     constructor() {
+        // this wouldn't scale well, but works fine for this app
         this.movies = toClj(JSON.parse(fs.readFileSync(MOVIES_FILE)));
     }
 
@@ -23,7 +24,6 @@ export default class Movies {
         fs.writeFile(MOVIES_FILE, JSON.stringify(toJs(this.movies), null, 4), cb);
     }
 
-    // it might be better to index movies by id
     getMovie(id = '') {
         const movie = first(filter(m => {
             return get(m, 'id') === id;
@@ -32,7 +32,6 @@ export default class Movies {
         return toJs(movie);
     }
 
-    // FIXME: mutation functions should handle reading / writing to file
     createMovie(movie = {}) {
         const newMovie = assoc(toClj(movie), 'id', shortid.generate());
         this.movies = conj(this.movies, newMovie);
@@ -71,10 +70,10 @@ export default class Movies {
             }
 
             if (category) {
-                return fuzzy(get(movie, category), text);
+                return strict(get(movie, category), text);
             }
 
-            const matches = map(val => fuzzy(val, text), vals(movie));
+            const matches = map(val => strict(val, text), vals(movie));
             return some(match => match !== false, matches);
         }, filter((movie) => {
             const selectedGenres = toClj(genres);
