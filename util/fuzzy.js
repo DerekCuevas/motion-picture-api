@@ -1,22 +1,17 @@
-import _ from 'lodash';
+import {memoize} from 'lodash';
 
 // adapted from here:
 // http://codereview.stackexchange.com/questions/23899/faster-javascript-fuzzy-string-matching-function
-// added ability to search on multiple keywords in the same string
 
-const cache = _.memoize((str) => {
-    return new RegExp('^' + str.replace(/./g, (x) => {
-        return /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/.test(x) ? '\\' + x + '?' : x + '?';
-    }) + '$');
+const cache = memoize(pattern => {
+    return new RegExp(pattern.split('').reduce((a, b) => {
+        return a + '[^' + b + ']*' + b;
+    }));
 });
 
 export default function fuzzy(str, pattern) {
-    const keywords = pattern.split(' ');
-
     if (!str || !pattern) {
         return false;
     }
-    return _.some(keywords, (word) => {
-        return cache(str.toLowerCase()).test(word.toLowerCase());
-    });
+    return cache(pattern.toLowerCase()).test(str.toString().toLowerCase());
 }
