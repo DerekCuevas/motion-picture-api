@@ -1,6 +1,5 @@
 import Joi from 'joi';
 import qs from 'qs';
-import {toClj, toJs} from 'mori';
 import _ from 'lodash';
 import Movies from '../models/Movies';
 import {schema, genres} from '../models/Movie.schema';
@@ -65,7 +64,7 @@ function validate(movie, fields) {
 
 // GET - / (serves the main app)
 export function index(req, res) {
-    const seed = toJs(movies.queryMovies(DEFAULT_PAGE_LIMIT, DEFAULT_PAGE_OFFSET));
+    const seed = movies.queryMovies(DEFAULT_PAGE_LIMIT, DEFAULT_PAGE_OFFSET);
     seed.pages = getPages(req, {}, seed);
     seed.genres = genres;
 
@@ -86,13 +85,13 @@ export function queryMovies(req, res) {
         });
     }
 
-    const result = toJs(movies.queryMovies(
+    const result = movies.queryMovies(
         (limit * Math.sign(limit)) || DEFAULT_PAGE_LIMIT,
         (offset * Math.sign(offset)) || DEFAULT_PAGE_OFFSET,
-        toClj(query.genres),
+        query.genres,
         query.category ? query.category.toLowerCase().trim() : '',
         query.q ? query.q.trim() : ''
-    ));
+    );
 
     const pages = getPages(req, query, result);
 
@@ -114,7 +113,7 @@ export function getGenres(req, res) {
 // GET - /api/movies/:id
 export function getMovie(req, res) {
     const id = req.params.id;
-    const movie = toJs(movies.getMovie(id));
+    const movie = movies.getMovie(id);
 
     if (!movie) {
         return res.status(404).json({
@@ -146,7 +145,7 @@ export function createMovie(req, res) {
     val.movie.created_at = now;
     val.movie.updated_at = now;
 
-    const newMovie = toJs(movies.createMovie(toClj(val.movie)));
+    const newMovie = movies.createMovie(val.movie);
 
     movies.save((err) => {
         if (err) {
@@ -175,7 +174,7 @@ export function updateMovie(req, res) {
     }
 
     val.movie.updated_at = (new Date()).toISOString();
-    const updatedMovie = toJs(movies.updateMovie(id, toClj(val.movie)));
+    const updatedMovie = movies.updateMovie(id, val.movie);
 
     if (!updatedMovie) {
         return res.status(404).json({
@@ -194,7 +193,7 @@ export function updateMovie(req, res) {
 // DELETE - /api/movies/:id
 export function deleteMovie(req, res) {
     const id = req.params.id;
-    const removed = toJs(movies.deleteMovie(id));
+    const removed = movies.deleteMovie(id);
 
     if (!removed) {
         return res.status(404).json({

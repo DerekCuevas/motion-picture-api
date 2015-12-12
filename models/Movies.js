@@ -14,7 +14,6 @@ import fuzzy from '../util/fuzzy';
 
 const MOVIES_FILE = path.join(__dirname, '../../resources/movies.json');
 
-// FIXME: hide or expose mori? - hide it
 export default class Movies {
     constructor() {
         this.movies = toClj(JSON.parse(fs.readFileSync(MOVIES_FILE)));
@@ -26,45 +25,47 @@ export default class Movies {
 
     // it might be better to index movies by id
     getMovie(id = '') {
-        return first(filter((movie) => {
-            return get(movie, 'id') === id;
+        const movie = first(filter(m => {
+            return get(m, 'id') === id;
         }, this.movies));
+
+        return toJs(movie);
     }
 
-    createMovie(movie = hashMap()) {
-        const newMovie = assoc(movie, 'id', shortid.generate());
+    // FIXME: mutation functions should handle reading / writing to file
+    createMovie(movie = {}) {
+        const newMovie = assoc(toClj(movie), 'id', shortid.generate());
         this.movies = conj(this.movies, newMovie);
-        return newMovie;
+        return toJs(newMovie);
     }
 
-    updateMovie(id = '', fields = hashMap()) {
-        const movie = this.getMovie(id);
+    updateMovie(id = '', fields = {}) {
+        const movie = toClj(this.getMovie(id));
 
         if (!movie) {
             return undefined;
         }
 
-        const updated = merge(movie, dissoc(fields, 'id'));
+        const updated = merge(movie, dissoc(toClj(fields), 'id'));
         const removed = remove(partial(equals, movie), this.movies);
 
         this.movies = conj(removed, updated);
-        return updated;
+        return toJs(updated);
     }
 
     deleteMovie(id = '') {
-        const movie = this.getMovie(id);
+        const movie = toClj(this.getMovie(id));
 
         if (!movie) {
             return undefined;
         }
 
         this.movies = remove(partial(equals, movie), this.movies);
-        return movie;
+        return toJs(movie);
     }
 
-    filter(genres = vector(), category = '', text = '') {
-        // filtering movies by fuzzy text matches
-        return filter((movie) => {
+    filter(genres = [], category = '', text = '') {
+        return toJs(filter((movie) => {
             if (!text.length) {
                 return true;
             }
@@ -75,15 +76,15 @@ export default class Movies {
 
             const matches = map(val => fuzzy(val, text), vals(movie));
             return some(match => match !== false, matches);
-
-        // filtering movies by genres
         }, filter((movie) => {
-            if (!count(genres)) {
+            const selectedGenres = toClj(genres);
+
+            if (!count(selectedGenres)) {
                 return true;
             }
 
-            return contains(genres, get(movie, 'genre'));
-        }, this.movies));
+            return contains(selectedGenres, get(movie, 'genre'));
+        }, this.movies)));
     }
 
     pageinate(vec, limit, offset) {
@@ -99,6 +100,7 @@ export default class Movies {
             pages = assoc(pages, 'prev', hashMap('offset', offset - limit));
         }
 
+        // returns a mori hashMap
         return pages;
     }
 
@@ -112,6 +114,6 @@ export default class Movies {
         const sliced = subvec(results, start, end);
         const pages = this.pageinate(results, limit, start);
 
-        return hashMap('movies', sliced, 'pages', pages, 'total', length);
+        return toJs(hashMap('movies', sliced, 'pages', pages, 'total', length));
     }
 }
