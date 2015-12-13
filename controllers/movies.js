@@ -24,26 +24,22 @@ function normalize(body) {
 function getPages(req, query, result) {
     const baseUrl = `${req.protocol}://${req.get('host')}`;
     const pages = {};
+    const params = {
+        limit: result.pages.limit,
+        genres: query.genres,
+        category: query.category,
+        q: query.q,
+    };
 
     if (result.pages.next) {
-        const next = qs.stringify({
-            limit: result.pages.limit,
-            offset: result.pages.next.offset,
-            genres: query.genres,
-            category: query.category,
-            q: query.q,
-        });
+        params.offset = result.pages.next.offset;
+        const next = qs.stringify(params);
         pages.next = `${baseUrl}/api/movies?${next}`;
     }
 
     if (result.pages.prev) {
-        const prev = qs.stringify({
-            limit: result.pages.limit,
-            offset: result.pages.prev.offset,
-            genres: query.genres,
-            category: query.category,
-            q: query.q,
-        });
+        params.offset = result.pages.prev.offset;
+        const prev = qs.stringify(params);
         pages.prev = `${baseUrl}/api/movies?${prev}`;
     }
 
@@ -91,8 +87,10 @@ export function queryMovies(req, res) {
     const limit = parseInt(query.limit, 10);
     const offset = parseInt(query.offset, 10);
 
+    let filterGenres = [];
+
     if (query.genres) {
-        query.genres = query.genres.split(',').map((genre) => {
+        filterGenres = query.genres.split(',').map(genre => {
             return genre.toLowerCase().trim();
         });
     }
@@ -100,7 +98,7 @@ export function queryMovies(req, res) {
     const result = movies.queryMovies(
         (limit * Math.sign(limit)) || DEFAULT_PAGE_LIMIT,
         (offset * Math.sign(offset)) || DEFAULT_PAGE_OFFSET,
-        query.genres,
+        filterGenres,
         query.category ? query.category.toLowerCase().trim() : '',
         query.q ? query.q.trim() : ''
     );
@@ -154,7 +152,7 @@ export function createMovie(req, res) {
 
     const newMovie = movies.createMovie(val.movie);
 
-    movies.save((err) => {
+    movies.save(err => {
         if (err) {
             throw err;
         }
@@ -186,7 +184,7 @@ export function updateMovie(req, res) {
         });
     }
 
-    movies.save((err) => {
+    movies.save(err => {
         if (err) {
             throw err;
         }
@@ -205,7 +203,7 @@ export function deleteMovie(req, res) {
         });
     }
 
-    movies.save((err) => {
+    movies.save(err => {
         if (err) {
             throw err;
         }
