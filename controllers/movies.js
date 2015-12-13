@@ -9,6 +9,18 @@ const DEFAULT_PAGE_OFFSET = 0;
 
 const movies = new Movies();
 
+function normalize(body) {
+    if (body.genre) {
+        body.genre = body.genre.toLowerCase().trim();
+    }
+
+    if (body.producer) {
+        body.producer = body.producer.toLowerCase().trim();
+    }
+
+    return body;
+}
+
 function getPages(req, query, result) {
     const baseUrl = `${req.protocol}://${req.get('host')}`;
     const pages = {};
@@ -124,14 +136,9 @@ export function getMovie(req, res) {
     res.json(movie);
 }
 
-// FIXME: lowercase producer key
-
 // POST - /api/movies
 export function createMovie(req, res) {
-    if (req.body.genre) {
-        req.body.genre = req.body.genre.toLowerCase().trim();
-    }
-
+    req.body = normalize(req.body);
     const val = validate(req.body, schema);
 
     if (val.error) {
@@ -160,10 +167,7 @@ export function createMovie(req, res) {
 export function updateMovie(req, res) {
     const id = req.params.id;
 
-    if (req.body.genre) {
-        req.body.genre = req.body.genre.toLowerCase().trim();
-    }
-
+    req.body = normalize(req.body);
     const val = validate(req.body, _.pick(schema, _.keys(req.body)));
 
     if (val.error) {
