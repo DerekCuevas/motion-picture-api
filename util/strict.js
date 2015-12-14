@@ -1,7 +1,13 @@
+import {some} from 'lodash';
+
 export default function strict(str, pattern) {
+    const keywords = pattern.split(' ');
+
     if (!str || !pattern) {
         return false;
     }
 
-    return str.toString().toLowerCase().search(pattern.toLowerCase()) !== -1;
+    return some(keywords, word => {
+        return str.toString().toLowerCase().search(word.toLowerCase()) !== -1;
+    });
 }

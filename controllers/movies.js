@@ -55,7 +55,7 @@ function validate(movie, fields) {
         return {
             error: true,
             message: 'Validation Failed',
-            errors: val.error.details.map((err) => {
+            errors: val.error.details.map(err => {
                 return {
                     field: err.path,
                     message: err.message,
@@ -127,7 +127,7 @@ export function getMovie(req, res) {
 
     if (!movie) {
         return res.status(404).json({
-            message: `The movie "${id}" does not exist`,
+            message: `The movie by id: "${id}" does not exist`,
         });
     }
 
@@ -180,7 +180,7 @@ export function updateMovie(req, res) {
 
     if (!updatedMovie) {
         return res.status(404).json({
-            message: `The movie "${id}" does not exist`,
+            message: `The movie by id: "${id}" does not exist`,
         });
     }
 
@@ -199,7 +199,7 @@ export function deleteMovie(req, res) {
 
     if (!removed) {
         return res.status(404).json({
-            message: `The movie "${id}" does not exist`,
+            message: `The movie by id: "${id}" does not exist`,
         });
     }
 

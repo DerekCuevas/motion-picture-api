@@ -64,7 +64,7 @@ export default class Movies {
     }
 
     filter(genres = [], category = '', text = '') {
-        return toJs(filter((movie) => {
+        return toJs(filter(movie => {
             if (!text.length) {
                 return true;
             }
@@ -75,7 +75,7 @@ export default class Movies {
 
             const matches = map(val => strict(val, text), vals(movie));
             return some(match => match !== false, matches);
-        }, filter((movie) => {
+        }, filter(movie => {
             const selectedGenres = toClj(genres);
 
             if (!count(selectedGenres)) {
