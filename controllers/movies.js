@@ -33,14 +33,12 @@ function getPages(req, query, result) {
 
     if (result.pages.next) {
         params.offset = result.pages.next.offset;
-        const next = qs.stringify(params);
-        pages.next = `${baseUrl}/api/movies?${next}`;
+        pages.next = `${baseUrl}/api/movies?${qs.stringify(params)}`;
     }
 
     if (result.pages.prev) {
         params.offset = result.pages.prev.offset;
-        const prev = qs.stringify(params);
-        pages.prev = `${baseUrl}/api/movies?${prev}`;
+        pages.prev = `${baseUrl}/api/movies?${qs.stringify(params)}`;
     }
 
     return pages;
