@@ -4,7 +4,7 @@ import _ from 'lodash';
 import Movies from '../models/Movies';
 import {schema, genres} from '../models/Movie.schema';
 
-const DEFAULT_PAGE_LIMIT = 10;
+const DEFAULT_PAGE_LIMIT = 12;
 const DEFAULT_PAGE_OFFSET = 0;
 
 const movies = new Movies();
