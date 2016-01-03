@@ -21,29 +21,6 @@ function normalize(body) {
     return body;
 }
 
-function getPages(req, query, result) {
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
-    const pages = {};
-    const params = {
-        limit: result.pages.limit,
-        genres: query.genres,
-        category: query.category,
-        q: query.q,
-    };
-
-    if (result.pages.next) {
-        params.offset = result.pages.next.offset;
-        pages.next = `${baseUrl}/api/movies?${qs.stringify(params)}`;
-    }
-
-    if (result.pages.prev) {
-        params.offset = result.pages.prev.offset;
-        pages.prev = `${baseUrl}/api/movies?${qs.stringify(params)}`;
-    }
-
-    return pages;
-}
-
 function validate(movie, fields) {
     const val = Joi.validate(movie, fields, {
         abortEarly: false,
@@ -66,6 +43,29 @@ function validate(movie, fields) {
         error: false,
         movie: val.value,
     };
+}
+
+function getPages(req, query, result) {
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const pages = {};
+    const params = {
+        limit: result.pages.limit,
+        genres: query.genres,
+        category: query.category,
+        q: query.q,
+    };
+
+    if (result.pages.next) {
+        params.offset = result.pages.next.offset;
+        pages.next = `${baseUrl}/api/movies?${qs.stringify(params)}`;
+    }
+
+    if (result.pages.prev) {
+        params.offset = result.pages.prev.offset;
+        pages.prev = `${baseUrl}/api/movies?${qs.stringify(params)}`;
+    }
+
+    return pages;
 }
 
 // GET - / (serves the main app)
