@@ -3,6 +3,7 @@ import qs from 'qs';
 import _ from 'lodash';
 import Movies from '../models/Movies';
 import {schema, genres} from '../models/Movie.schema';
+import titleCase from '../util/titleCase';
 
 const DEFAULT_PAGE_LIMIT = 12;
 const DEFAULT_PAGE_OFFSET = 0;
@@ -72,7 +73,7 @@ function getPages(req, query, result) {
 export function index(req, res) {
     const seed = movies.queryMovies(DEFAULT_PAGE_LIMIT, DEFAULT_PAGE_OFFSET);
     seed.pages = getPages(req, {}, seed);
-    seed.genres = genres;
+    seed.genres = genres.map(titleCase);
 
     res.render('app', {
         seed: JSON.stringify(seed),
@@ -115,7 +116,7 @@ export function queryMovies(req, res) {
 
 // GET - /api/movies/genres
 export function getGenres(req, res) {
-    res.json(genres);
+    res.json(genres.map(titleCase));
 }
 
 // GET - /api/movies/:id
