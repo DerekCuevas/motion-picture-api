@@ -1,4 +1,4 @@
-import * as movies from './controllers/movies';
+import * as movies from './controllers/moviesController';
 
 export default function configureRoutes(app) {
     // The app
