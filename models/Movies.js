@@ -77,12 +77,13 @@ export default class Movies {
             return some(match => match !== false, matches);
         }, filter(movie => {
             const selectedGenres = toClj(genres);
+            const movieGenre = toJs(get(movie, 'genre')).toLowerCase();
 
             if (!count(selectedGenres)) {
                 return true;
             }
 
-            return contains(selectedGenres, get(movie, 'genre'));
+            return contains(selectedGenres, movieGenre);
         }, this.movies)));
     }
 
