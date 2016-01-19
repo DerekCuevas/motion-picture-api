@@ -3,6 +3,7 @@ import * as movies from './controllers/moviesController';
 export default function configureRoutes(app) {
     // The app
     app.get('/', movies.index);
+    app.get('/movies/:id', movies.index);
 
     // The API routes, move /api behind express router?
     app.get('/api/movies', movies.queryMovies);
