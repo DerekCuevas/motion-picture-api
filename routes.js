@@ -1,11 +1,12 @@
 import * as movies from './controllers/moviesController';
 
 export default function configureRoutes(app) {
-    // The app
+    // The app (handled by react-router on the client)
     app.get('/', movies.index);
     app.get('/movies/:id', movies.index);
 
-    // The API routes, move /api behind express router?
+    // The API routes
+    // FIXME: move /api behind express router?
     app.get('/api/movies', movies.queryMovies);
     app.get('/api/movies/genres', movies.getGenres);
     app.get('/api/movies/:id', movies.getMovie);
