@@ -24,6 +24,11 @@ export default class Movies {
         fs.writeFile(MOVIES_FILE, JSON.stringify(toJs(this.movies), null, 4), cb);
     }
 
+    // TODO: maybe add this, something like it?
+    load(cb) {
+        JSON.parse(fs.readFile(MOVIES_FILE, cb));
+    }
+
     getMovie(id = '') {
         const movie = first(filter(m => {
             return get(m, 'id') === id;
