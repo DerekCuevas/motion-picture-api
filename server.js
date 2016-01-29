@@ -18,6 +18,9 @@ app.set('view engine', '.hbs');
 app.disable('x-powered-by');
 
 app.set('port', process.env.PORT || 3000);
+
+// should do this in prod...
+// app.use(express.static('./static', {maxAge: 31557600000}));
 app.use(express.static('./static'));
 
 app.use(bodyParser.json());
