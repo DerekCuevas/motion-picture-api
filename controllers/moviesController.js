@@ -5,7 +5,7 @@ import Movies from '../models/Movies';
 import {schema, genres} from '../models/Movie.schema';
 import titleCase from '../util/titleCase';
 
-const DEFAULT_PAGE_LIMIT = 10;
+const DEFAULT_PAGE_LIMIT = 12;
 const DEFAULT_PAGE_OFFSET = 0;
 
 const movies = new Movies();
