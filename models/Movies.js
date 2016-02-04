@@ -113,8 +113,10 @@ export default class Movies {
         const results = into(vector(), this.filter(genres, category, text));
         const length = count(results);
 
-        const start = offset < length ? offset : length;
-        const end = limit + offset < length ? limit + offset : length;
+        let start = (offset < length) ? offset : length - 1;
+        const end = (limit + offset < length) ? limit + offset : length;
+
+        start = (start === -1) ? 0 : start;
 
         const sliced = subvec(results, start, end);
         const pages = this.pageinate(results, limit, start);
