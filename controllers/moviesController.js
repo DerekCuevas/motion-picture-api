@@ -106,8 +106,15 @@ export function index(req, res) {
         query.text
     );
 
-    seed.pages = getPages(req, query, seed);
+    seed.pages = getPages(req, {
+        q: query.text,
+        category: query.category,
+        genres: query.genres.join(','),
+    }, seed);
+
     seed.genres = genres.map(titleCase);
+    query.p = parseInt(req.query.p, 10) || 1;
+    seed.query = query;
 
     res.render('app', {
         seed: JSON.stringify(seed),
@@ -117,9 +124,6 @@ export function index(req, res) {
 // GET - /api/movies
 export function queryMovies(req, res) {
     const query = req.query;
-    const limit = parseInt(query.limit, 10);
-    const offset = parseInt(query.offset, 10);
-
     let filterGenres = [];
 
     if (query.genres) {
@@ -129,8 +133,8 @@ export function queryMovies(req, res) {
     }
 
     const result = movies.queryMovies(
-        (limit * Math.sign(limit)) || DEFAULT_PAGE_LIMIT,
-        (offset * Math.sign(offset)) || DEFAULT_PAGE_OFFSET,
+        normalizeInt(query.limit) || DEFAULT_PAGE_LIMIT,
+        normalizeInt(query.offset) || DEFAULT_PAGE_OFFSET,
         filterGenres,
         query.category ? query.category.toLowerCase().trim() : '',
         query.q ? query.q.trim() : ''
