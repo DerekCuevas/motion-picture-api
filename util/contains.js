@@ -1,5 +1,3 @@
-import {count, filter, partial, equals} from 'mori';
-
-export default function contains(seq, item) {
-    return count(filter(partial(equals, item), seq)) !== 0;
+export default function contains(arr, elem) {
+    return !!arr.find(item => item === elem);
 }

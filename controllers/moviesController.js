@@ -71,6 +71,7 @@ function getPages(req, query, result) {
 
 // GET - / (serves the main app)
 export function index(req, res) {
+    // TODO: could seed w/ correct query...
     const seed = movies.queryMovies(DEFAULT_PAGE_LIMIT, DEFAULT_PAGE_OFFSET);
     seed.pages = getPages(req, {}, seed);
     seed.genres = genres.map(titleCase);

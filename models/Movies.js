@@ -3,12 +3,9 @@ import path from 'path';
 import shortid from 'shortid';
 
 import strict from '../util/strict';
+import contains from '../util/contains';
 
 const MOVIES_FILE = path.join(__dirname, '../../resources/movies.json');
-
-function contains(arr, elem) {
-    return !!arr.find(item => item === elem);
-}
 
 export default class Movies {
     constructor() {
@@ -45,10 +42,7 @@ export default class Movies {
             return undefined;
         }
 
-        // is there a better way to do this?
-        delete fields.id;
-
-        const updated = Object.assign({}, found, fields);
+        const updated = Object.assign({}, found, Object.assign({}, fields, {id}));
         const removed = this.movies.filter(movie => movie.id !== id);
 
         this.movies = [...removed, updated];
@@ -93,31 +87,19 @@ export default class Movies {
         const pages = {limit};
 
         if (more) {
-            pages.next = {offset: offset + limit};
+            pages.next = {
+                offset: offset + limit,
+            };
         }
 
         if (less) {
-            pages.prev = {offset: offset - limit};
+            pages.prev = {
+                offset: offset - limit,
+            };
         }
 
         return pages;
     }
-
-    /*
-    queryMovies(limit, offset, genres, category, text) {
-        const results = into(vector(), this.filter(genres, category, text));
-        const length = count(results);
-
-        let start = (offset < length) ? offset : length - 1;
-        const end = (limit + offset < length) ? limit + offset : length;
-
-        start = (start === -1) ? 0 : start;
-
-        const sliced = subvec(results, start, end);
-        const pages = this.pageinate(results, limit, start);
-
-        return toJs(hashMap('movies', sliced, 'pages', pages, 'total', length));
-    }*/
 
     queryMovies(limit, offset, genres, category, text) {
         const results = this.filter(genres, category, text);
@@ -127,8 +109,6 @@ export default class Movies {
         const end = (limit + offset < length) ? limit + offset : length;
 
         start = (start === -1) ? 0 : start;
-
-        // const sliced = subvec(results, start, end);
 
         const sliced = results.slice(start, end);
         const pages = this.pageinate(results, limit, start);
