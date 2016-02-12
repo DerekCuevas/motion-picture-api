@@ -69,9 +69,14 @@ function getPages(req, query, result) {
     return pages;
 }
 
+function normalizeInt(int) {
+    const parsed = parseInt(int, 10);
+    return parsed * Math.sign(parsed);
+}
+
 function parseQuery(query) {
-    const limit = query.size || DEFAULT_PAGE_LIMIT;
-    const offset = query.p ? ((query.p * limit) - limit) : DEFAULT_PAGE_OFFSET;
+    const limit = normalizeInt(query.size) || DEFAULT_PAGE_LIMIT;
+    const offset = query.p ? ((normalizeInt(query.p) * limit) - limit) : DEFAULT_PAGE_OFFSET;
 
     let filterGenres = [];
 
@@ -101,7 +106,7 @@ export function index(req, res) {
         query.text
     );
 
-    seed.pages = getPages(req, {}, seed);
+    seed.pages = getPages(req, query, seed);
     seed.genres = genres.map(titleCase);
 
     res.render('app', {
