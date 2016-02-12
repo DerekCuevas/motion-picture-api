@@ -113,7 +113,7 @@ export function index(req, res) {
     }, seed);
 
     seed.genres = genres.map(titleCase);
-    query.p = parseInt(req.query.p, 10) || 1;
+    query.p = seed.movies.length === 0 ? 0 : (parseInt(req.query.p, 10) || 1);
     seed.query = query;
 
     res.render('app', {
