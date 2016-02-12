@@ -69,10 +69,38 @@ function getPages(req, query, result) {
     return pages;
 }
 
-// GET - / (serves the main app)
+function parseQuery(query) {
+    const limit = query.size || DEFAULT_PAGE_LIMIT;
+    const offset = query.p ? ((query.p * limit) - limit) : DEFAULT_PAGE_OFFSET;
+
+    let filterGenres = [];
+
+    if (query.genres) {
+        filterGenres = query.genres.split(',').map(genre => {
+            return genre.toLowerCase().trim();
+        });
+    }
+
+    return {
+        limit,
+        offset,
+        genres: filterGenres,
+        category: query.cat ? query.cat.toLowerCase().trim() : '',
+        text: query.q ? query.q.trim() : '',
+    };
+}
+
+// GET - / (serves the main app) - with correct seed data
 export function index(req, res) {
-    // TODO: could seed w/ correct query...
-    const seed = movies.queryMovies(DEFAULT_PAGE_LIMIT, DEFAULT_PAGE_OFFSET);
+    const query = parseQuery(req.query);
+    const seed = movies.queryMovies(
+        query.limit,
+        query.offset,
+        query.genres,
+        query.category,
+        query.text
+    );
+
     seed.pages = getPages(req, {}, seed);
     seed.genres = genres.map(titleCase);
 
