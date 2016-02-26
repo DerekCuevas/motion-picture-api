@@ -3,7 +3,7 @@ import exphbs from 'express-handlebars';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import chalk from 'chalk';
-import configureRoutes from './routes.js';
+import configureRoutes from './configureRoutes.js';
 
 const app = express();
 
