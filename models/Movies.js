@@ -12,9 +12,10 @@ export function getMovie(movies, id = '') {
 }
 
 export function createMovie(movies, movie = {}) {
-    const newMovie = Object.assign({}, movie, {
+    const newMovie = {
+        ...movie,
         id: shortid.generate(),
-    });
+    };
 
     return [...movies, newMovie];
 }
@@ -26,8 +27,13 @@ export function updateMovie(movies, id = '', fields = {}) {
         return undefined;
     }
 
-    // TODO: use object spread
-    const updated = Object.assign({}, found, Object.assign({}, fields, {id}));
+    const updated = {
+        ...found,
+        ...fields,
+        id,
+    };
+
+    // const updated = Object.assign({}, found, Object.assign({}, fields, {id}));
     const removed = movies.filter(movie => movie.id !== id);
 
     return [...removed, updated];
@@ -43,6 +49,7 @@ export function deleteMovie(movies, id = '') {
     return movies.filter(movie => movie.id !== id);
 }
 
+// TODO: add func to search Object
 export function filter(movies, genres = [], category = '', text = '') {
     return movies.filter(movie => {
         if (genres.length === 0) {
@@ -127,7 +134,7 @@ export function update(updatefn, ...args) {
                 return reject();
             }
 
-            fs.writeFile(MOVIES_FILE, JSON.stringify(result), (err) => {
+            fs.writeFile(MOVIES_FILE, JSON.stringify(result, null, 2), (err) => {
                 if (err) {
                     return reject(err);
                 }
