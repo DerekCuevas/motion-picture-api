@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import shortid from 'shortid';
-
 import strict from '../util/strict';
 import contains from '../util/contains';
 
@@ -17,11 +16,14 @@ export function createMovie(movies, movie = {}) {
         id: shortid.generate(),
     };
 
-    return [...movies, newMovie];
+    return {
+        movie: newMovie,
+        movies: [...movies, newMovie],
+    };
 }
 
 export function updateMovie(movies, id = '', fields = {}) {
-    const found = getMovie(id);
+    const found = getMovie(movies, id);
 
     if (!found) {
         return undefined;
@@ -33,24 +35,29 @@ export function updateMovie(movies, id = '', fields = {}) {
         id,
     };
 
-    // const updated = Object.assign({}, found, Object.assign({}, fields, {id}));
     const removed = movies.filter(movie => movie.id !== id);
 
-    return [...removed, updated];
+    return {
+        movie: updated,
+        movies: [...removed, updated],
+    };
 }
 
 export function deleteMovie(movies, id = '') {
-    const found = getMovie(id);
+    const found = getMovie(movies, id);
 
     if (!found) {
         return undefined;
     }
 
-    return movies.filter(movie => movie.id !== id);
+    return {
+        movie: found,
+        movies: movies.filter(movie => movie.id !== id),
+    };
 }
 
 // TODO: add func to search Object
-export function filter(movies, genres = [], category = '', text = '') {
+function filter(movies, genres = [], category = '', text = '') {
     return movies.filter(movie => {
         if (genres.length === 0) {
             return true;
@@ -71,7 +78,7 @@ export function filter(movies, genres = [], category = '', text = '') {
     });
 }
 
-export function pageinate(movies, limit, offset) {
+function pageinate(movies, limit, offset) {
     const more = offset + limit < movies.length;
     const less = offset > 0;
     const pages = {limit};
@@ -91,6 +98,7 @@ export function pageinate(movies, limit, offset) {
     return pages;
 }
 
+// TODO: change to page
 export function queryMovies(movies, limit, offset, genres, category, text) {
     const results = filter(genres, category, text);
     const length = results.length;
@@ -134,11 +142,13 @@ export function update(updatefn, ...args) {
                 return reject();
             }
 
-            fs.writeFile(MOVIES_FILE, JSON.stringify(result, null, 2), (err) => {
+            const {movie, movies} = result;
+
+            fs.writeFile(MOVIES_FILE, JSON.stringify(movies, null, 2), err => {
                 if (err) {
                     return reject(err);
                 }
-                resolve(result);
+                resolve(movie);
             });
         });
     });
