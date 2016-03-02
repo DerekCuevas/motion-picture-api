@@ -56,8 +56,7 @@ export function deleteMovie(movies, id = '') {
     };
 }
 
-// TODO: add func to search Object
-function filter(movies, genres = [], category = '', text = '') {
+function filter(movies = [], genres = [], category = '', text = '') {
     return movies.filter(movie => {
         if (genres.length === 0) {
             return true;
@@ -78,42 +77,35 @@ function filter(movies, genres = [], category = '', text = '') {
     });
 }
 
-function pageinate(movies, limit, offset) {
-    const more = offset + limit < movies.length;
-    const less = offset > 0;
-    const pages = {limit};
+function pageinate(length, size, page) {
+    const offset = (page - 1) * size;
+    const pages = {size};
 
-    if (more) {
+    if (offset + size < length) {
         pages.next = {
-            offset: offset + limit,
+            page: page + 1,
         };
     }
 
-    if (less) {
+    if (offset > 0) {
         pages.prev = {
-            offset: offset - limit,
+            page: page - 1,
         };
     }
 
     return pages;
 }
 
-// TODO: change to page
-export function queryMovies(movies, limit, offset, genres, category, text) {
-    const results = filter(genres, category, text);
+export function queryMovies(movies, page, size, genres, category, text) {
+    const results = filter(movies, genres, category, text);
     const length = results.length;
+    const offset = (page - 1) * size;
 
-    let start = (offset < length) ? offset : length - 1;
-    const end = (limit + offset < length) ? limit + offset : length;
-
-    start = (start === -1) ? 0 : start;
-
-    const sliced = results.slice(start, end);
-    const pages = pageinate(results, limit, start);
+    const start = offset <= length ? offset : length - size;
 
     return {
-        pages,
-        movies: sliced,
+        pages: pageinate(length, size, start),
+        movies: results.slice(start, start + size),
         total: length,
     };
 }
