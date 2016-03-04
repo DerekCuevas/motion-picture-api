@@ -102,7 +102,14 @@ function pageinate(length, params) {
 export function queryMovies(movies, {page = 1, size = 10, genres, category, text} = {}) {
     const offset = (page - 1) * size;
 
-    const results = filter(movies, genres, category, text);
+    const results = filter(
+        movies,
+        genres ? genres.map(genre => genre.trim().toLowerCase()) : [],
+        category ? category.trim().toLowerCase() : '',
+        text ? text.trim().toLowerCase() : ''
+    );
+
+    // TODO: add tests for this
     const start = offset <= results.length ? offset : results.length - size;
 
     return {
@@ -116,18 +123,13 @@ export function query(queryfn, ...args) {
     return new Promise((resolve, reject) => {
         fs.readFile(MOVIES_FILE, (error, data) => {
             if (error) {
-                return reject({
-                    status: 500,
-                    error,
-                });
+                return reject({status: 500, error});
             }
 
             const result = queryfn(JSON.parse(data), ...args);
 
             if (!result) {
-                return reject({
-                    status: 404,
-                });
+                return reject({status: 404});
             }
 
             resolve(result);

@@ -20,11 +20,11 @@ export function index(req, res) {
     const {page = 1, size = 10, genres = [], category, text} = req.query;
 
     query(queryMovies, {
+        genres,
+        category,
+        text,
         page: parseInt(page, 10),
         size: parseInt(size, 10),
-        genres: genres.map(genre => genre.trim().toLowerCase()),
-        category: category ? category.trim().toLowerCase() : undefined,
-        text: text ? text.trim().toLowerCase() : undefined,
     }).then(({movies, total, pages}) => {
         if (pages.next || pages.previous) {
             res.links(getLinks(req, pages));
