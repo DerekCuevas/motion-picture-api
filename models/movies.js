@@ -56,7 +56,7 @@ export function deleteMovie(movies, id = '') {
     };
 }
 
-function filter(movies, genres, category, text) {
+function filter(movies, genres = [], category = '', text = '') {
     return movies.filter(movie => {
         if (genres.length === 0) {
             return true;
@@ -77,19 +77,20 @@ function filter(movies, genres, category, text) {
     });
 }
 
-// TODO: include params ?
-function pageinate(length, size, page) {
+function pageinate(length, size, page, params = {}) {
     const offset = (page - 1) * size;
-    const pages = {size};
+    const pages = {};
 
     if (offset + size < length) {
         pages.next = {
+            ...params,
             page: page + 1,
         };
     }
 
     if (offset > 0) {
         pages.prev = {
+            ...params,
             page: page - 1,
         };
     }
@@ -97,14 +98,16 @@ function pageinate(length, size, page) {
     return pages;
 }
 
-export function queryMovies(movies, {page = 1, size = 10, genres = [], category = '', text = ''}) {
+export function queryMovies(movies, {page = 1, size = 10, genres, category, text} = {}) {
+    const params = {page, size, genres, category, text};
+
     const results = filter(movies, genres, category, text);
     const offset = (page - 1) * size;
 
     const start = offset <= results.length ? offset : results.length - size;
 
     return {
-        pages: pageinate(results.length, size, page),
+        pages: pageinate(results.length, size, page, params),
         movies: results.slice(start, start + size),
         total: results.length,
     };
