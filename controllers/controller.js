@@ -1,6 +1,39 @@
-import {getMovie, query} from '../models/movies';
+import qs from 'qs';
+import {getMovie, queryMovies, query} from '../models/movies';
 
-// GET - /api/movies/:id
+function getLinks(req, {next, previous}) {
+    const base = `${req.protocol}://${req.get('host')}`;
+    const links = {};
+
+    if (next) {
+        links.next = `${base}/api/movies?${qs.stringify(next)}`;
+    }
+
+    if (previous) {
+        links.previous = `${base}/api/movies?${qs.stringify(previous)}`;
+    }
+
+    return links;
+}
+
+export function index(req, res) {
+    const {page = 1, size = 10, genres = [], category, text} = req.query;
+
+    query(queryMovies, {
+        page: parseInt(page, 10),
+        size: parseInt(size, 10),
+        genres: genres.map(genre => genre.trim().toLowerCase()),
+        category: category ? category.trim().toLowerCase() : undefined,
+        text: text ? text.trim().toLowerCase() : undefined,
+    }).then(({movies, total, pages}) => {
+        if (pages.next || pages.previous) {
+            res.links(getLinks(req, pages));
+        }
+
+        res.json({movies, total});
+    });
+}
+
 export function get({params: {id}}, res) {
     query(getMovie, id).then(movie => {
         res.json(movie);
@@ -12,38 +45,3 @@ export function get({params: {id}}, res) {
         }
     });
 }
-
-/*
-
-// GET - /api/movies
-export function queryMovies(req, res) {
-    const query = req.query;
-    let filterGenres = [];
-
-    if (query.genres) {
-        filterGenres = query.genres.split(',').map(genre => {
-            return genre.toLowerCase().trim();
-        });
-    }
-
-    const result = movies.queryMovies(
-        normalizeInt(query.limit) || DEFAULT_PAGE_LIMIT,
-        normalizeInt(query.offset) || DEFAULT_PAGE_OFFSET,
-        filterGenres,
-        query.category ? query.category.toLowerCase().trim() : '',
-        query.q ? query.q.trim() : ''
-    );
-
-    const pages = getPages(req, query, result);
-
-    if (pages.next || pages.prev) {
-        res.links(pages);
-    }
-
-    res.json({
-        movies: result.movies,
-        total: result.total,
-    });
-}
-
-*/

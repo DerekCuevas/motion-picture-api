@@ -90,7 +90,7 @@ function pageinate(length, params) {
     }
 
     if (offset > 0) {
-        pages.prev = {
+        pages.previous = {
             ...params,
             page: page - 1,
         };
