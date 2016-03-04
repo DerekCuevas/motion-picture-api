@@ -77,7 +77,8 @@ function filter(movies, genres = [], category = '', text = '') {
     });
 }
 
-function pageinate(length, size, page, params = {}) {
+function pageinate(length, params) {
+    const {page, size} = params;
     const offset = (page - 1) * size;
     const pages = {};
 
@@ -99,15 +100,13 @@ function pageinate(length, size, page, params = {}) {
 }
 
 export function queryMovies(movies, {page = 1, size = 10, genres, category, text} = {}) {
-    const params = {page, size, genres, category, text};
-
-    const results = filter(movies, genres, category, text);
     const offset = (page - 1) * size;
 
+    const results = filter(movies, genres, category, text);
     const start = offset <= results.length ? offset : results.length - size;
 
     return {
-        pages: pageinate(results.length, size, page, params),
+        pages: pageinate(results.length, {page, size, genres, category, text}),
         movies: results.slice(start, start + size),
         total: results.length,
     };
@@ -117,9 +116,21 @@ export function query(queryfn, ...args) {
     return new Promise((resolve, reject) => {
         fs.readFile(MOVIES_FILE, (error, data) => {
             if (error) {
-                return reject(error);
+                return reject({
+                    status: 500,
+                    error,
+                });
             }
-            resolve(queryfn(JSON.parse(data), ...args));
+
+            const result = queryfn(JSON.parse(data), ...args);
+
+            if (!result) {
+                return reject({
+                    status: 404,
+                });
+            }
+
+            resolve(result);
         });
     });
 }
@@ -133,6 +144,7 @@ export function update(updatefn, ...args) {
 
             const result = updatefn(JSON.parse(data), ...args);
 
+            // FIXME: find better way to do this
             if (!result) {
                 return reject();
             }

@@ -1,6 +1,9 @@
-import * as movies from './controllers/moviesController';
+import * as movies from './controllers/controller';
 
 export default function configureRoutes(app) {
+    app.get('/api/movies/:id', movies.get);
+
+    /*
     // The app (handled by react-router on the client)
     app.get('/', movies.index);
     app.get('/movies/:id', movies.index);
@@ -13,4 +16,5 @@ export default function configureRoutes(app) {
     app.post('/api/movies', movies.createMovie);
     app.put('/api/movies/:id', movies.updateMovie);
     app.delete('/api/movies/:id', movies.deleteMovie);
+    */
 }
