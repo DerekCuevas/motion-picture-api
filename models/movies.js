@@ -24,7 +24,7 @@ export function createMovie(movies, movie = {}, when) {
     };
 }
 
-export function updateMovie(movies, id = '', fields = {}) {
+export function updateMovie(movies, id = '', fields = {}, when) {
     const found = getMovie(movies, id);
 
     if (!found) {
@@ -35,6 +35,7 @@ export function updateMovie(movies, id = '', fields = {}) {
         ...found,
         ...fields,
         id,
+        updated_at: when,
     };
 
     const removed = movies.filter(movie => movie.id !== id);
@@ -101,7 +102,7 @@ function pageinate(length = 0, params = {}) {
     return pages;
 }
 
-export function queryMovies(movies, {page = 1, size = 10, genres, category, text} = {}) {
+export function queryMovies(movies, {page = 1, size = 10, genres = [], category, text} = {}) {
     const offset = (page - 1) * size;
 
     const results = filter(
