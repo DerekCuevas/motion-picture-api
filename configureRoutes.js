@@ -3,6 +3,7 @@ import * as movies from './controllers/controller';
 export default function configureRoutes(app) {
     app.get('/api/movies', movies.index);
     app.get('/api/movies/:id', movies.get);
+    app.post('/api/movies', movies.post);
 
     /*
     // The app (handled by react-router on the client)

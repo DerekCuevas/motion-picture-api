@@ -10,10 +10,12 @@ export function getMovie(movies, id = '') {
     return movies.find(movie => movie.id === id);
 }
 
-export function createMovie(movies, movie = {}) {
+export function createMovie(movies, movie = {}, when) {
     const newMovie = {
         ...movie,
         id: shortid.generate(),
+        created_at: when,
+        updated_at: when,
     };
 
     return {
@@ -77,7 +79,7 @@ function filter(movies, genres = [], category = '', text = '') {
     });
 }
 
-function pageinate(length, params) {
+function pageinate(length = 0, params = {}) {
     const {page, size} = params;
     const offset = (page - 1) * size;
     const pages = {};
@@ -141,21 +143,20 @@ export function update(updatefn, ...args) {
     return new Promise((resolve, reject) => {
         fs.readFile(MOVIES_FILE, (error, data) => {
             if (error) {
-                return reject(error);
+                return reject({status: 500, error});
             }
 
             const result = updatefn(JSON.parse(data), ...args);
 
-            // FIXME: find better way to do this
             if (!result) {
-                return reject();
+                return reject({status: 404});
             }
 
             const {movie, movies} = result;
 
             fs.writeFile(MOVIES_FILE, JSON.stringify(movies, null, 2), err => {
                 if (err) {
-                    return reject(err);
+                    return reject({status: 500, err});
                 }
                 resolve(movie);
             });

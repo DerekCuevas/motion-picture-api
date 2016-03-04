@@ -1,5 +1,11 @@
 import qs from 'qs';
-import {getMovie, queryMovies, query} from '../models/movies';
+import {
+    queryMovies,
+    getMovie,
+    createMovie,
+    query,
+    update,
+} from '../models/movies';
 
 function getLinks(req, {next, previous}) {
     const base = `${req.protocol}://${req.get('host')}`;
@@ -45,3 +51,47 @@ export function get({params: {id}}, res) {
         }
     });
 }
+
+// TODO: add validation
+export function post({body: movie}, res) {
+    update(createMovie, movie, (new Date()).toISOString()).then(created => {
+        res.location(`/api/movies/${created.id}`)
+            .status(201)
+            .json(created);
+    }).catch(({status, error}) => {
+        if (status === 500) {
+            res.status(500).json({
+                error,
+                message: '500 server error',
+            });
+        }
+    });
+}
+
+/*
+export function createMovie(req, res) {
+    req.body = normalize(req.body);
+    const val = validate(req.body, schema);
+
+    if (val.error) {
+        return res.status(422).json({
+            message: val.message,
+            errors: val.errors,
+        });
+    }
+
+    const now = (new Date()).toISOString();
+    val.movie.created_at = now;
+    val.movie.updated_at = now;
+
+    const newMovie = movies.createMovie(val.movie);
+
+    movies.save(err => {
+        if (err) {
+            throw err;
+        }
+        res.location(`/api/movies/${newMovie.id}`);
+        res.status(201).json(newMovie);
+    });
+}
+ */
