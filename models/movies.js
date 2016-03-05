@@ -57,7 +57,7 @@ export function deleteMovie(movies, id = '') {
     };
 }
 
-function filter(movies, genres = [], category = '', text = '') {
+function filter(movies, genres = [], category = '', q = '') {
     return movies.filter(movie => {
         if (genres.length === 0) {
             return true;
@@ -65,15 +65,15 @@ function filter(movies, genres = [], category = '', text = '') {
 
         return contains(genres, movie.genre.toLowerCase());
     }).filter(movie => {
-        if (!text) {
+        if (!q) {
             return true;
         }
 
         if (category) {
-            return search(movie[category], text);
+            return search(movie[category], q);
         }
 
-        const matches = Object.keys(movie).map(key => search(movie[key], text));
+        const matches = Object.keys(movie).map(key => search(movie[key], q));
         return matches.some(match => match !== false);
     });
 }
@@ -104,7 +104,7 @@ function pageinate(length = 0, params = {}) {
 export function queryMovies(movies, params = {}) {
     const {
         category,
-        text,
+        q,
         page = FIRST_PAGE,
         size = DEFAULT_PAGE_SIZE,
         genres = [],
@@ -116,14 +116,14 @@ export function queryMovies(movies, params = {}) {
         movies,
         genres ? genres.map(genre => genre.trim().toLowerCase()) : [],
         category ? category.trim().toLowerCase() : '',
-        text ? text.trim().toLowerCase() : ''
+        q ? q.trim().toLowerCase() : ''
     );
 
     // TODO: add tests for this
     const start = offset <= results.length ? offset : results.length - size;
 
     return {
-        pages: pageinate(results.length, {page, size, genres, category, text}),
+        pages: pageinate(results.length, {page, size, genres, category, q}),
         movies: results.slice(start, start + size),
         total: results.length,
     };

@@ -41,7 +41,7 @@ export function index(req, res) {
     const {
         genres,
         category,
-        query: text,
+        q,
         page = FIRST_PAGE,
         size = DEFAULT_PAGE_SIZE,
     } = req.query;
@@ -49,7 +49,7 @@ export function index(req, res) {
     query(queryMovies, {
         genres,
         category,
-        text,
+        q,
         page: parseInt(page, 10),
         size: size < MAX_PAGE_SIZE ? parseInt(size, 10) : MAX_PAGE_SIZE,
     }).then(({movies, total, pages}) => {
