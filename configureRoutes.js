@@ -1,10 +1,9 @@
+import sendApp from './controllers/app';
 import * as movies from './controllers/movies';
 
 export default function configureRoutes(app) {
-    /*
-    app.get('/', movies.index);
-    app.get('/movies/:id', movies.index);
-    */
+    app.get('/', sendApp);
+    app.get('/movies/:id', sendApp);
 
     app.get('/api/movies', movies.index);
     app.get('/api/movies/:id', movies.get);
