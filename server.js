@@ -1,5 +1,4 @@
 import express from 'express';
-import exphbs from 'express-handlebars';
 import cors from 'cors';
 import compression from 'compression';
 import bodyParser from 'body-parser';
@@ -9,26 +8,22 @@ import configureRoutes from './configureRoutes.js';
 
 const app = express();
 
-// view engine config
-app.engine('.hbs', exphbs({
-    defaultLayout: 'main',
-    extname: '.hbs',
-}));
-app.set('view engine', '.hbs');
-
-// other app presets / middleware
+// app presets / middleware
 app.disable('x-powered-by');
-
 app.set('port', process.env.PORT || 3000);
 
 // should do this in prod...
 // app.use(express.static('./static', {maxAge: 31557600000}));
 app.use(express.static('./static'));
 
-app.use(cors());
+// prod
 app.use(compression());
-app.use(bodyParser.json());
+
+// dev
 app.use(morgan('dev'));
+
+app.use(cors());
+app.use(bodyParser.json());
 
 // configure all routes for the API
 configureRoutes(app);
