@@ -1,6 +1,8 @@
 import Joi from 'joi';
 import pick from 'lodash.pick';
 import {DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, FIRST_PAGE} from '../config';
+import getLinks from '../util/getLinks';
+import {schema} from '../models/movie.schema';
 import {
     queryMovies,
     getMovie,
@@ -10,8 +12,6 @@ import {
     query,
     update,
 } from '../models/movies';
-import getLinks from '../util/getLinks';
-import {schema} from '../models/movie.schema';
 
 function handleError(res, id = '') {
     return ({status, error}) => {
@@ -68,12 +68,13 @@ export function get({params: {id}}, res) {
 }
 
 export function post({body: movie}, res) {
-    const now = (new Date()).toISOString();
     const {error} = Joi.validate(movie, schema, {abortEarly: false});
 
     if (error) {
         return res.status(422).json(getValidationErrors(error));
     }
+
+    const now = (new Date()).toISOString();
 
     update(createMovie, movie, now).then(created => {
         res.location(`/api/movies/${created.id}`)
@@ -83,7 +84,6 @@ export function post({body: movie}, res) {
 }
 
 export function put({params: {id}, body: movie}, res) {
-    const now = (new Date()).toISOString();
     const {error} = Joi.validate(
         movie,
         pick(schema, Object.keys(movie)),
@@ -93,6 +93,8 @@ export function put({params: {id}, body: movie}, res) {
     if (error) {
         return res.status(422).json(getValidationErrors(error));
     }
+
+    const now = (new Date()).toISOString();
 
     update(updateMovie, id, movie, now).then(updated => {
         res.json(updated);
