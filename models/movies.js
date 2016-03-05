@@ -1,6 +1,6 @@
 import fs from 'fs';
 import shortid from 'shortid';
-import {MOVIES_FILE, DEFAULT_PAGE_SIZE, FIRST_PAGE} from '../config';
+import {MOVIES_FILE, DEFAULT_LIMIT, FIRST_PAGE} from '../config';
 import search from '../util/search';
 import contains from '../util/contains';
 
@@ -74,17 +74,18 @@ function filter(movies, genres = [], category = '', q = '') {
         }
 
         const matches = Object.keys(movie).map(key => search(movie[key], q));
+
         return matches.some(match => match !== false);
     });
 }
 
 // TODO: previous should point to last page if page > total pages
 function pageinate(length = 0, params = {}) {
-    const {page, size} = params;
-    const offset = (page - 1) * size;
+    const {page, limit} = params;
+    const offset = (page - 1) * limit;
     const pages = {};
 
-    if (offset + size < length) {
+    if (offset + limit < length) {
         pages.next = {
             ...params,
             page: page + 1,
@@ -101,16 +102,17 @@ function pageinate(length = 0, params = {}) {
     return pages;
 }
 
+// TODO: add tests
 export function queryMovies(movies, params = {}) {
     const {
         category,
         q,
         page = FIRST_PAGE,
-        size = DEFAULT_PAGE_SIZE,
+        limit = DEFAULT_LIMIT,
         genres = [],
     } = params;
 
-    const offset = (page - 1) * size;
+    const offset = (page - 1) * limit;
 
     const results = filter(
         movies,
@@ -119,12 +121,11 @@ export function queryMovies(movies, params = {}) {
         q ? q.trim().toLowerCase() : ''
     );
 
-    // TODO: add tests for this
-    const start = offset <= results.length ? offset : results.length - size;
+    const start = offset <= results.length ? offset : results.length - limit;
 
     return {
-        pages: pageinate(results.length, {page, size, genres, category, q}),
-        movies: results.slice(start, start + size),
+        pages: pageinate(results.length, {page, limit, genres, category, q}),
+        movies: results.slice(start, start + limit),
         total: results.length,
     };
 }
