@@ -13,6 +13,21 @@ import {
 import getLinks from '../util/getLinks';
 import {schema} from '../models/movie.schema';
 
+function handleError(res, id = '') {
+    return ({status, error}) => {
+        if (status === 404) {
+            res.status(404).json({
+                message: `The movie by id: "${id}" does not exist`,
+            });
+        } else if (status === 500) {
+            res.status(500).json({
+                error,
+                message: '500 server error',
+            });
+        }
+    };
+}
+
 export function index(req, res) {
     const {
         genres,
@@ -27,38 +42,20 @@ export function index(req, res) {
         category,
         text,
         page: parseInt(page, 10),
-        size: parseInt(size, 10) < MAX_PAGE_SIZE ? parseInt(size, 10) : MAX_PAGE_SIZE,
+        size: size < MAX_PAGE_SIZE ? parseInt(size, 10) : MAX_PAGE_SIZE,
     }).then(({movies, total, pages}) => {
         if (pages.next || pages.previous) {
             res.links(getLinks(req, pages));
         }
 
         res.json({movies, total});
-    }).catch(({status, error}) => {
-        if (status === 500) {
-            res.status(500).json({
-                error,
-                message: '500 server error',
-            });
-        }
-    });
+    }).catch(handleError(res));
 }
 
 export function get({params: {id}}, res) {
     query(getMovie, id).then(movie => {
         res.json(movie);
-    }).catch(({status, error}) => {
-        if (status === 404) {
-            res.status(404).json({
-                message: `The movie by id: "${id}" does not exist`,
-            });
-        } else if (status === 500) {
-            res.status(500).json({
-                error,
-                message: '500 server error',
-            });
-        }
-    });
+    }).catch(handleError(res, id));
 }
 
 export function post({body: movie}, res) {
@@ -67,7 +64,6 @@ export function post({body: movie}, res) {
 
     if (validation.error) {
         return res.status(422).json({
-            message: 'Validation Failed',
             errors: validation.error.details.map(e => ({
                 field: e.path,
                 message: e.message,
@@ -79,14 +75,7 @@ export function post({body: movie}, res) {
         res.location(`/api/movies/${created.id}`)
             .status(201)
             .json(created);
-    }).catch(({status, error}) => {
-        if (status === 500) {
-            res.status(500).json({
-                error,
-                message: '500 server error',
-            });
-        }
-    });
+    }).catch(handleError(res));
 }
 
 export function put({params: {id}, body: movie}, res) {
@@ -99,7 +88,6 @@ export function put({params: {id}, body: movie}, res) {
 
     if (validation.error) {
         return res.status(422).json({
-            message: 'Validation Failed',
             errors: validation.error.details.map(e => ({
                 field: e.path,
                 message: e.message,
@@ -109,33 +97,11 @@ export function put({params: {id}, body: movie}, res) {
 
     update(updateMovie, id, movie, now).then(updated => {
         res.json(updated);
-    }).catch(({status, error}) => {
-        if (status === 404) {
-            res.status(404).json({
-                message: `The movie by id: "${id}" does not exist`,
-            });
-        } else if (status === 500) {
-            res.status(500).json({
-                error,
-                message: '500 server error',
-            });
-        }
-    });
+    }).catch(handleError(res, id));
 }
 
 export function del({params: {id}}, res) {
     update(deleteMovie, id).then(() => {
         res.status(204).json();
-    }).catch(({status, error}) => {
-        if (status === 404) {
-            res.status(404).json({
-                message: `The movie by id: "${id}" does not exist`,
-            });
-        } else if (status === 500) {
-            res.status(500).json({
-                error,
-                message: '500 server error',
-            });
-        }
-    });
+    }).catch(handleError(res, id));
 }
