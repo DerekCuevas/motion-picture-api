@@ -28,11 +28,20 @@ function handleError(res, id = '') {
     };
 }
 
+function getValidationErrors(error) {
+    return {
+        errors: error.details.map(e => ({
+            field: e.path,
+            message: e.message,
+        })),
+    };
+}
+
 export function index(req, res) {
     const {
         genres,
         category,
-        text,
+        query: text,
         page = FIRST_PAGE,
         size = DEFAULT_PAGE_SIZE,
     } = req.query;
@@ -60,15 +69,10 @@ export function get({params: {id}}, res) {
 
 export function post({body: movie}, res) {
     const now = (new Date()).toISOString();
-    const validation = Joi.validate(movie, schema, {abortEarly: false});
+    const {error} = Joi.validate(movie, schema, {abortEarly: false});
 
-    if (validation.error) {
-        return res.status(422).json({
-            errors: validation.error.details.map(e => ({
-                field: e.path,
-                message: e.message,
-            })),
-        });
+    if (error) {
+        return res.status(422).json(getValidationErrors(error));
     }
 
     update(createMovie, movie, now).then(created => {
@@ -80,19 +84,14 @@ export function post({body: movie}, res) {
 
 export function put({params: {id}, body: movie}, res) {
     const now = (new Date()).toISOString();
-    const validation = Joi.validate(
+    const {error} = Joi.validate(
         movie,
         pick(schema, Object.keys(movie)),
         {abortEarly: false}
     );
 
-    if (validation.error) {
-        return res.status(422).json({
-            errors: validation.error.details.map(e => ({
-                field: e.path,
-                message: e.message,
-            })),
-        });
+    if (error) {
+        return res.status(422).json(getValidationErrors(error));
     }
 
     update(updateMovie, id, movie, now).then(updated => {
