@@ -1,5 +1,7 @@
 import express from 'express';
 import exphbs from 'express-handlebars';
+import cors from 'cors';
+import compression from 'compression';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import chalk from 'chalk';
@@ -23,6 +25,8 @@ app.set('port', process.env.PORT || 3000);
 // app.use(express.static('./static', {maxAge: 31557600000}));
 app.use(express.static('./static'));
 
+app.use(cors());
+app.use(compression());
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
