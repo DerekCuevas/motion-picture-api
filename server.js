@@ -1,3 +1,4 @@
+import path from 'path';
 import express from 'express';
 import cors from 'cors';
 import compression from 'compression';
@@ -8,24 +9,23 @@ import configureRoutes from './configureRoutes.js';
 
 const app = express();
 
-// app presets / middleware
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 3000);
-
-// should do this in prod...
-// app.use(express.static('./static', {maxAge: 31557600000}));
-app.use(express.static('./static'));
-
-// prod
-app.use(compression());
-
-// dev
-app.use(morgan('dev'));
 
 app.use(cors());
 app.use(bodyParser.json());
 
-// configure all routes for the API
+if (app.settings.env === 'production') {
+    app.use(compression());
+    app.use(express.static(path.join(__dirname, '../static'), {
+        maxAge: (60 * 60 * 1000),
+    }));
+    app.use(morgan('common'));
+} else {
+    app.use(express.static(path.join(__dirname, '../static')));
+    app.use(morgan('dev'));
+}
+
 configureRoutes(app);
 
 app.use((req, res) => {
