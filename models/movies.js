@@ -101,7 +101,15 @@ function pageinate(length = 0, params = {}) {
     return pages;
 }
 
-export function queryMovies(movies, {page = FIRST_PAGE, size = DEFAULT_PAGE_SIZE, genres = [], category, text} = {}) {
+export function queryMovies(movies, params = {}) {
+    const {
+        category,
+        text,
+        page = FIRST_PAGE,
+        size = DEFAULT_PAGE_SIZE,
+        genres = [],
+    } = params;
+
     const offset = (page - 1) * size;
 
     const results = filter(
