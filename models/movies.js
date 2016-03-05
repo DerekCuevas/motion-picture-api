@@ -80,6 +80,7 @@ function filter(movies, genres = [], category = '', text = '') {
     });
 }
 
+// TODO: previous should point to last page if page > total pages
 function pageinate(length = 0, params = {}) {
     const {page, size} = params;
     const offset = (page - 1) * size;

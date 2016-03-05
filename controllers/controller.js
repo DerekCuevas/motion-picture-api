@@ -1,3 +1,5 @@
+import Joi from 'joi';
+import pick from 'lodash.pick';
 import {
     queryMovies,
     getMovie,
@@ -8,6 +10,7 @@ import {
     update,
 } from '../models/movies';
 import getLinks from '../util/getLinks';
+import {schema} from '../models/movie.schema';
 
 export function index(req, res) {
     const {page = 1, size = 10, genres, category, text} = req.query;
@@ -51,9 +54,19 @@ export function get({params: {id}}, res) {
     });
 }
 
-// TODO: add validation
 export function post({body: movie}, res) {
     const now = (new Date()).toISOString();
+    const validation = Joi.validate(movie, schema, {abortEarly: false});
+
+    if (validation.error) {
+        return res.status(422).json({
+            message: 'Validation Failed',
+            errors: validation.error.details.map(e => ({
+                field: e.path,
+                message: e.message,
+            })),
+        });
+    }
 
     update(createMovie, movie, now).then(created => {
         res.location(`/api/movies/${created.id}`)
@@ -69,9 +82,23 @@ export function post({body: movie}, res) {
     });
 }
 
-// TODO: add validation
 export function put({params: {id}, body: movie}, res) {
     const now = (new Date()).toISOString();
+    const validation = Joi.validate(
+        movie,
+        pick(schema, Object.keys(movie)),
+        {abortEarly: false}
+    );
+
+    if (validation.error) {
+        return res.status(422).json({
+            message: 'Validation Failed',
+            errors: validation.error.details.map(e => ({
+                field: e.path,
+                message: e.message,
+            })),
+        });
+    }
 
     update(updateMovie, id, movie, now).then(updated => {
         res.json(updated);

@@ -30,12 +30,11 @@ app.use(morgan('dev'));
 configureRoutes(app);
 
 app.use((req, res) => {
-    res.status(404).send('404');
+    res.status(404).send('404 Not Found');
 });
 
 app.use((err, req, res) => {
-    console.error(chalk.bold.red(err));
-    res.status(500).send('500');
+    res.status(500).send('500 Server Error');
 });
 
 app.listen(app.get('port'), () => {
