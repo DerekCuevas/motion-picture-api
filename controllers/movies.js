@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import pick from 'lodash.pick';
+import {DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, FIRST_PAGE} from '../config';
 import {
     queryMovies,
     getMovie,
@@ -13,14 +14,20 @@ import getLinks from '../util/getLinks';
 import {schema} from '../models/movie.schema';
 
 export function index(req, res) {
-    const {page = 1, size = 10, genres, category, text} = req.query;
+    const {
+        genres,
+        category,
+        text,
+        page = FIRST_PAGE,
+        size = DEFAULT_PAGE_SIZE,
+    } = req.query;
 
     query(queryMovies, {
         genres,
         category,
         text,
         page: parseInt(page, 10),
-        size: parseInt(size, 10),
+        size: parseInt(size, 10) < MAX_PAGE_SIZE ? parseInt(size, 10) : MAX_PAGE_SIZE,
     }).then(({movies, total, pages}) => {
         if (pages.next || pages.previous) {
             res.links(getLinks(req, pages));

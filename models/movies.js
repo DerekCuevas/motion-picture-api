@@ -1,10 +1,8 @@
 import fs from 'fs';
-import path from 'path';
 import shortid from 'shortid';
-import strict from '../util/strict';
+import {MOVIES_FILE, DEFAULT_PAGE_SIZE, FIRST_PAGE} from '../config';
+import search from '../util/search';
 import contains from '../util/contains';
-
-const MOVIES_FILE = path.join(__dirname, '../../resources/movies.json');
 
 export function getMovie(movies, id = '') {
     return movies.find(movie => movie.id === id);
@@ -72,10 +70,10 @@ function filter(movies, genres = [], category = '', text = '') {
         }
 
         if (category) {
-            return strict(movie[category], text);
+            return search(movie[category], text);
         }
 
-        const matches = Object.keys(movie).map(key => strict(movie[key], text));
+        const matches = Object.keys(movie).map(key => search(movie[key], text));
         return matches.some(match => match !== false);
     });
 }
@@ -103,7 +101,7 @@ function pageinate(length = 0, params = {}) {
     return pages;
 }
 
-export function queryMovies(movies, {page = 1, size = 10, genres = [], category, text} = {}) {
+export function queryMovies(movies, {page = FIRST_PAGE, size = DEFAULT_PAGE_SIZE, genres = [], category, text} = {}) {
     const offset = (page - 1) * size;
 
     const results = filter(

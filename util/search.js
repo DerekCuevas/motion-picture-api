@@ -1,21 +1,11 @@
-import isObject from 'lodash.isobject';
+import memoize from 'lodash.memoize';
 
-function forEvery(obj, fn) {
-    Object.keys(obj).forEach(key => fn(key, obj[key]));
+function search(str, pattern) {
+    if (!str || !pattern) {
+        return false;
+    }
+
+    return str.toString().toLowerCase().includes(pattern.toLowerCase());
 }
 
-export default function search(obj, keyword) {
-    let match = false;
-
-    (function deep(ob, kw) {
-        forEvery(ob, (_, val) => {
-            if (isObject(val)) {
-                deep(val, kw);
-            } else if (val.toString().toLowerCase().includes(kw.toLowerCase())) {
-                match = true;
-            }
-        });
-    }(obj, keyword));
-
-    return match;
-}
+export default memoize(search, (...args) => JSON.stringify(args));
