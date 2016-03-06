@@ -102,7 +102,6 @@ function pageinate(length = 0, params = {}) {
     return pages;
 }
 
-// TODO: add tests
 export function queryMovies(movies, params = {}) {
     const {
         category,
