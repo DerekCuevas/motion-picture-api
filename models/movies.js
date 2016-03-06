@@ -18,7 +18,7 @@ export function createMovie(movies, movie = {}, when) {
 
     return {
         movie: newMovie,
-        movies: [...movies, newMovie],
+        movies: [newMovie, ...movies],
     };
 }
 
@@ -40,7 +40,7 @@ export function updateMovie(movies, id = '', fields = {}, when) {
 
     return {
         movie: updated,
-        movies: [...removed, updated],
+        movies: [updated, ...removed],
     };
 }
 
@@ -74,7 +74,6 @@ function filter(movies, genres = [], category = '', q = '') {
         }
 
         const matches = Object.keys(movie).map(key => search(movie[key], q));
-
         return matches.some(match => match !== false);
     });
 }
