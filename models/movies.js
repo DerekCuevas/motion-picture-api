@@ -79,10 +79,10 @@ function filter(movies, genres = [], category = '', q = '') {
     });
 }
 
-// TODO: previous should point to last page if page > total pages
 function pageinate(length = 0, params = {}) {
     const {page, limit} = params;
     const offset = (page - 1) * limit;
+    const total = Math.ceil(length / limit);
     const pages = {};
 
     if (offset + limit < length) {
@@ -95,7 +95,7 @@ function pageinate(length = 0, params = {}) {
     if (offset > 0) {
         pages.previous = {
             ...params,
-            page: page - 1,
+            page: (page - 1) > total ? total : page - 1,
         };
     }
 
@@ -112,8 +112,6 @@ export function queryMovies(movies, params = {}) {
         genres = [],
     } = params;
 
-    const offset = (page - 1) * limit;
-
     const results = filter(
         movies,
         genres ? genres.map(genre => genre.trim().toLowerCase()) : [],
@@ -121,11 +119,11 @@ export function queryMovies(movies, params = {}) {
         q ? q.trim().toLowerCase() : ''
     );
 
-    const start = offset <= results.length ? offset : results.length - limit;
+    const offset = (page - 1) * limit;
 
     return {
         pages: pageinate(results.length, {page, limit, genres, category, q}),
-        movies: results.slice(start, start + limit),
+        movies: results.slice(offset, offset + limit),
         total: results.length,
     };
 }
