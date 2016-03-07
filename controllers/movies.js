@@ -19,7 +19,7 @@ function handleError(res, id = '') {
             res.status(404).json({
                 message: `The movie by id: "${id}" does not exist`,
             });
-        } else if (status === 500) {
+        } else {
             res.status(500).json({
                 error,
                 message: '500 server error',
