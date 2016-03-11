@@ -1,6 +1,6 @@
 import qs from 'qs';
 
-export default function getLinks(req, {next, previous}) {
+export default function getLinks(req, { next, previous }) {
     const base = `${req.protocol}://${req.get('host')}`;
     const links = {};
 

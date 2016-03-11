@@ -1,8 +1,8 @@
 import Joi from 'joi';
 import pick from 'lodash.pick';
-import {DEFAULT_LIMIT, MAX_LIMIT, FIRST_PAGE} from '../config';
+import { DEFAULT_LIMIT, MAX_LIMIT, FIRST_PAGE } from '../config';
 import getLinks from '../util/getLinks';
-import {schema} from '../models/movie.schema';
+import { schema } from '../models/movie.schema';
 import {
     queryMovies,
     getMovie,
@@ -14,7 +14,7 @@ import {
 } from '../models/movies';
 
 function handleError(res, id = '') {
-    return ({status, error}) => {
+    return ({ status, error }) => {
         if (status === 404) {
             res.status(404).json({
                 message: `The movie by id: "${id}" does not exist`,
@@ -42,7 +42,7 @@ export function index(req, res) {
         genres,
         category,
         q,
-        page = FIRST_PAGE,
+        p = FIRST_PAGE,
         limit = DEFAULT_LIMIT,
     } = req.query;
 
@@ -50,25 +50,25 @@ export function index(req, res) {
         genres,
         category,
         q,
-        page: parseInt(page, 10),
+        p: parseInt(p, 10),
         limit: limit < MAX_LIMIT ? parseInt(limit, 10) : MAX_LIMIT,
-    }).then(({movies, total, pages}) => {
+    }).then(({ movies, total, pages }) => {
         if (pages.next || pages.previous) {
             res.links(getLinks(req, pages));
         }
 
-        res.json({movies, total});
+        res.json({ movies, total });
     }).catch(handleError(res));
 }
 
-export function get({params: {id}}, res) {
+export function get({ params: { id } }, res) {
     query(getMovie, id).then(movie => {
         res.json(movie);
     }).catch(handleError(res, id));
 }
 
-export function post({body: movie}, res) {
-    const {error} = Joi.validate(movie, schema, {abortEarly: false});
+export function post({ body: movie }, res) {
+    const { error } = Joi.validate(movie, schema, { abortEarly: false });
 
     if (error) {
         return res.status(422).json(getValidationErrors(error));
@@ -83,11 +83,11 @@ export function post({body: movie}, res) {
     }).catch(handleError(res));
 }
 
-export function put({params: {id}, body: movie}, res) {
-    const {error} = Joi.validate(
+export function put({ params: { id }, body: movie }, res) {
+    const { error } = Joi.validate(
         movie,
         pick(schema, Object.keys(movie)),
-        {abortEarly: false}
+        { abortEarly: false }
     );
 
     if (error) {
@@ -101,7 +101,7 @@ export function put({params: {id}, body: movie}, res) {
     }).catch(handleError(res, id));
 }
 
-export function del({params: {id}}, res) {
+export function del({ params: { id } }, res) {
     update(deleteMovie, id).then(() => {
         res.status(204).json();
     }).catch(handleError(res, id));
