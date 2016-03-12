@@ -37,7 +37,6 @@ export function updateMovie(movies, id = '', fields = {}, when) {
     };
 
     const removed = movies.filter(movie => movie.id !== id);
-
     return {
         movie: updated,
         movies: [updated, ...removed],
@@ -118,7 +117,6 @@ export function queryMovies(movies, params = {}) {
     );
 
     const offset = (p - 1) * limit;
-
     return {
         pages: pageinate(results.length, { p, limit, genres, category, q }),
         movies: results.slice(offset, offset + limit),
