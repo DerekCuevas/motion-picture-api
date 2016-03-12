@@ -9,7 +9,7 @@ export function getMovie(movies, id = '') {
 }
 
 export function createMovie(movies, movie = {}, when) {
-  const newMovie = {
+  const created = {
     ...movie,
     id: shortid.generate(),
     created_at: when,
@@ -17,8 +17,8 @@ export function createMovie(movies, movie = {}, when) {
   };
 
   return {
-    movie: newMovie,
-    movies: [newMovie, ...movies],
+    movie: created,
+    movies: [created, ...movies],
   };
 }
 
@@ -163,6 +163,7 @@ export function update(updatefn, ...args) {
         if (err) {
           return reject({ status: 500, err });
         }
+
         resolve(movie);
       });
     });

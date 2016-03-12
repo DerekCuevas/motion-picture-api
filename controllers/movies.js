@@ -67,8 +67,10 @@ export function get({ params: { id } }, res) {
   }).catch(handleError(res, id));
 }
 
-export function post({ body: movie }, res) {
-  const { error } = Joi.validate(movie, schema, { abortEarly: false });
+export function post({ body }, res) {
+  const { error, value: movie } = Joi.validate(body, schema, {
+    abortEarly: false,
+  });
 
   if (error) {
     return res.status(422).json(getValidationErrors(error));
@@ -77,18 +79,14 @@ export function post({ body: movie }, res) {
   const now = (new Date()).toISOString();
 
   update(createMovie, movie, now).then(created => {
-    res.location(`/api/movies/${created.id}`)
-      .status(201)
-      .json(created);
+    res.location(`/api/movies/${created.id}`).status(201).json(created);
   }).catch(handleError(res));
 }
 
-export function put({ params: { id }, body: movie }, res) {
-  const { error } = Joi.validate(
-    movie,
-    pick(schema, Object.keys(movie)),
-    { abortEarly: false }
-  );
+export function put({ params: { id }, body }, res) {
+  const { error, value: fields } = Joi.validate(body, pick(schema, Object.keys(body)), {
+    abortEarly: false,
+  });
 
   if (error) {
     return res.status(422).json(getValidationErrors(error));
@@ -96,7 +94,7 @@ export function put({ params: { id }, body: movie }, res) {
 
   const now = (new Date()).toISOString();
 
-  update(updateMovie, id, movie, now).then(updated => {
+  update(updateMovie, id, fields, now).then(updated => {
     res.json(updated);
   }).catch(handleError(res, id));
 }
