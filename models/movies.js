@@ -37,6 +37,7 @@ export function updateMovie(movies, id = '', fields = {}, when) {
   };
 
   const removed = movies.filter(movie => movie.id !== id);
+
   return {
     movie: updated,
     movies: [updated, ...removed],
@@ -117,6 +118,7 @@ export function queryMovies(movies, params = {}) {
   );
 
   const offset = (p - 1) * limit;
+
   return {
     pages: pageinate(results.length, { p, limit, genres, category, q }),
     movies: results.slice(offset, offset + limit),
@@ -132,6 +134,7 @@ export function query(queryfn, ...args) {
       }
 
       const result = queryfn(JSON.parse(data), ...args);
+
       if (!result) {
         return reject({ status: 404 });
       }
@@ -149,11 +152,13 @@ export function update(updatefn, ...args) {
       }
 
       const result = updatefn(JSON.parse(data), ...args);
+
       if (!result) {
         return reject({ status: 404 });
       }
 
       const { movie, movies } = result;
+
       fs.writeFile(MOVIES_FILE, JSON.stringify(movies, null, 2), err => {
         if (err) {
           return reject({ status: 500, err });
