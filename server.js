@@ -16,28 +16,28 @@ app.use(cors());
 app.use(bodyParser.json());
 
 if (app.settings.env === 'production') {
-    app.use(compression());
-    app.use(express.static(path.join(__dirname, '../static'), {
-        maxAge: (60 * 60 * 1000),
-    }));
-    app.use(morgan('common'));
+  app.use(compression());
+  app.use(express.static(path.join(__dirname, '../static'), {
+    maxAge: (60 * 60 * 1000),
+  }));
+  app.use(morgan('common'));
 } else {
-    app.use(express.static(path.join(__dirname, '../static')));
-    app.use(morgan('dev'));
+  app.use(express.static(path.join(__dirname, '../static')));
+  app.use(morgan('dev'));
 }
 
 configureRoutes(app);
 
 app.use((req, res) => {
-    res.status(404).send('404 Not Found');
+  res.status(404).send('404 Not Found');
 });
 
 app.use((err, req, res) => {
-    res.status(500).send('500 Server Error');
+  res.status(500).send('500 Server Error');
 });
 
 app.listen(app.get('port'), () => {
-    console.log(chalk.bold.blue(
-        `=> app in ${app.get('env')} at http://localhost:${app.get('port')}`
-    ));
+  console.log(chalk.bold.blue(
+    `=> app in ${app.get('env')} at http://localhost:${app.get('port')}`
+  ));
 });
