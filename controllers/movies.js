@@ -84,7 +84,8 @@ export function post({ body }, res) {
 }
 
 export function put({ params: { id }, body }, res) {
-  const { error, value: fields } = Joi.validate(body, pick(schema, Object.keys(body)), {
+  const picked = pick(schema, Object.keys(body));
+  const { error, value: fields } = Joi.validate(body, picked, {
     abortEarly: false,
   });
 
