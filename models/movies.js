@@ -112,7 +112,7 @@ export function queryMovies(movies, params = {}) {
 
   const results = filter(
     movies,
-    genres ? genres.map(genre => genre.trim().toLowerCase()) : [],
+    genres.map(genre => genre.trim().toLowerCase()),
     category ? category.trim().toLowerCase() : '',
     q ? q.trim().toLowerCase() : ''
   );
