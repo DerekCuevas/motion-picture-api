@@ -3,6 +3,7 @@ import pick from 'lodash.pick';
 import { DEFAULT_LIMIT, MAX_LIMIT, FIRST_PAGE } from '../config';
 import getLinks from '../util/getLinks';
 import { schema } from '../models/movie.schema';
+
 import {
   queryMovies,
   getMovie,
@@ -29,12 +30,10 @@ function handleError(res, id = '') {
 }
 
 function getValidationErrors(error) {
-  return {
-    errors: error.details.map(e => ({
-      field: e.path,
-      message: e.message,
-    })),
-  };
+  return error.details.map(e => ({
+    field: e.path,
+    message: e.message,
+  }));
 }
 
 export function index(req, res) {
@@ -73,7 +72,9 @@ export function post({ body }, res) {
   });
 
   if (error) {
-    return res.status(422).json(getValidationErrors(error));
+    return res.status(422).json({
+      errors: getValidationErrors(error),
+    });
   }
 
   const now = (new Date()).toISOString();
@@ -90,7 +91,9 @@ export function put({ params: { id }, body }, res) {
   });
 
   if (error) {
-    return res.status(422).json(getValidationErrors(error));
+    return res.status(422).json({
+      errors: getValidationErrors(error),
+    });
   }
 
   const now = (new Date()).toISOString();
