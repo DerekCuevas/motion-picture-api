@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import pick from 'lodash.pick';
+import chalk from 'chalk';
 import { DEFAULT_LIMIT, MAX_LIMIT, FIRST_PAGE } from '../config';
 import getLinks from '../util/getLinks';
 import { schema } from '../models/movie.schema';
@@ -15,16 +16,12 @@ import {
 } from '../models/movies';
 
 function handleError(res, id = '') {
-  return ({ status, error }) => {
-    if (status === 404) {
-      res.status(404).json({
-        message: `The movie by id: "${id}" does not exist`,
-      });
+  return error => {
+    if (error.status === 404) {
+      res.status(404).json({ message: `The movie by id: "${id}" does not exist` });
     } else {
-      res.status(500).json({
-        error,
-        message: '500 server error',
-      });
+      console.error(chalk.bold.red(`${error}`));
+      res.status(500).json({ message: '500 server error' });
     }
   };
 }

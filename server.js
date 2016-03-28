@@ -32,7 +32,8 @@ app.use((req, res) => {
   res.status(404).send('404 Not Found');
 });
 
-app.use((err, req, res) => {
+app.use((error, req, res) => {
+  console.error(chalk.bold.red(`${error}`));
   res.status(500).send('500 Server Error');
 });
 
