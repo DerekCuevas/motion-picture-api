@@ -24,7 +24,6 @@ export function createMovie(movies, movie = {}, when) {
 
 export function updateMovie(movies, id = '', fields = {}, when) {
   const found = getMovie(movies, id);
-
   if (!found) {
     return undefined;
   }
@@ -46,7 +45,6 @@ export function updateMovie(movies, id = '', fields = {}, when) {
 
 export function deleteMovie(movies, id = '') {
   const found = getMovie(movies, id);
-
   if (!found) {
     return undefined;
   }
@@ -138,7 +136,6 @@ export function query(queryfn, ...args) {
       if (!result) {
         return reject({ status: 404 });
       }
-
       resolve(result);
     });
   });
@@ -157,14 +154,11 @@ export function update(updatefn, ...args) {
         return reject({ status: 404 });
       }
 
-      const { movie, movies } = result;
-
-      fs.writeFile(MOVIES_FILE, JSON.stringify(movies, null, 2), err => {
+      fs.writeFile(MOVIES_FILE, JSON.stringify(result.movies, null, 2), err => {
         if (err) {
           return reject({ status: 500, err });
         }
-
-        resolve(movie);
+        resolve(result.movie);
       });
     });
   });
