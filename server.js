@@ -14,16 +14,15 @@ app.set('port', process.env.PORT || 3000);
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(morgan('dev'));
 
 if (app.settings.env === 'production') {
   app.use(compression());
   app.use(express.static(path.join(__dirname, '../static'), {
     maxAge: (60 * 60 * 1000),
   }));
-  app.use(morgan('common'));
 } else {
   app.use(express.static(path.join(__dirname, '../static')));
-  app.use(morgan('dev'));
 }
 
 configureRoutes(app);
