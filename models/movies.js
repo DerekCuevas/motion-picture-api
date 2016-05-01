@@ -24,27 +24,22 @@ export function createMovie(movies, movie = {}, when) {
 
 export function updateMovie(movies, id = '', fields = {}, when) {
   const found = getMovie(movies, id);
+
   if (!found) {
     return undefined;
   }
 
-  const updated = {
-    ...found,
-    ...fields,
-    id,
-    updated_at: when,
-  };
-
-  const removed = movies.filter(movie => movie.id !== id);
+  const updated = { ...found, ...fields, id, updated_at: when };
 
   return {
     movie: updated,
-    movies: [updated, ...removed],
+    movies: [updated, ...movies.filter(movie => movie.id !== id)],
   };
 }
 
 export function deleteMovie(movies, id = '') {
   const found = getMovie(movies, id);
+
   if (!found) {
     return undefined;
   }
@@ -57,19 +52,12 @@ export function deleteMovie(movies, id = '') {
 
 function filter(movies, genres = [], category = '', q = '') {
   return movies.filter(movie => {
-    if (genres.length === 0) {
-      return true;
-    }
+    if (!genres.length) return true;
 
     return contains(genres, movie.genre.toLowerCase());
   }).filter(movie => {
-    if (!q) {
-      return true;
-    }
-
-    if (category) {
-      return search(movie[category], q);
-    }
+    if (!q) return true;
+    if (category) return search(movie[category], q);
 
     const matches = Object.keys(movie).map(key => search(movie[key], q));
     return matches.some(match => match !== false);

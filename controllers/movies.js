@@ -1,6 +1,5 @@
 import Joi from 'joi';
 import pick from 'lodash.pick';
-import chalk from 'chalk';
 import { DEFAULT_LIMIT, MAX_LIMIT, FIRST_PAGE } from '../config';
 import getLinks from '../util/getLinks';
 import { schema } from '../models/movie.schema';
@@ -20,7 +19,6 @@ function handleError(res, id = '') {
     if (error.status === 404) {
       res.status(404).json({ message: `The movie by id: "${id}" does not exist` });
     } else {
-      console.error(chalk.bold.red(`${error}`));
       res.status(500).json({ message: '500 server error' });
     }
   };
@@ -42,13 +40,15 @@ export function index(req, res) {
     limit = DEFAULT_LIMIT,
   } = req.query;
 
-  query(queryMovies, {
+  const params = {
     genres,
     category,
     q,
     p: parseInt(p, 10),
     limit: limit < MAX_LIMIT ? parseInt(limit, 10) : MAX_LIMIT,
-  }).then(({ movies, total, pages }) => {
+  };
+
+  query(queryMovies, params).then(({ movies, total, pages }) => {
     if (pages.next || pages.previous) {
       res.links(getLinks(req, pages));
     }
