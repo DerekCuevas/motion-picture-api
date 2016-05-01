@@ -4,10 +4,11 @@
   "description": "A mock Node.js + Express HTTP JSON API.",
   "main": "server.js",
   "scripts": {
+    "build-static": "rimraf static && mkdir static && cp -r resources/imgs static/imgs",
     "test": "mocha --compilers js:babel-core/register --recursive",
     "test:watch": "npm test -- --watch",
-    "dev": "nodemon --exec babel-node server.js --ignore resources/ --ignore test/",
-    "start": "NODE_ENV=production babel-node server.js",
+    "dev": "npm run build-static && nodemon --exec babel-node server.js --ignore resources/ --ignore test/",
+    "start": "npm run build-static && NODE_ENV=production babel-node server.js",
     "lint": "eslint ."
   },
   "repository": {
@@ -44,6 +45,7 @@
     "eslint-plugin-react": "^5.0.1",
     "expect": "^1.18.0",
     "mocha": "^2.4.5",
-    "nodemon": "^1.9.2"
+    "nodemon": "^1.9.2",
+    "rimraf": "^2.5.2"
   }
 }

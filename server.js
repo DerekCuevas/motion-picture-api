@@ -18,11 +18,11 @@ app.use(morgan('dev'));
 
 if (app.settings.env === 'production') {
   app.use(compression());
-  app.use(express.static(path.join(__dirname, '../static'), {
+  app.use(express.static(path.join(__dirname, './static'), {
     maxAge: (60 * 60 * 1000),
   }));
 } else {
-  app.use(express.static(path.join(__dirname, '../static')));
+  app.use(express.static(path.join(__dirname, './static')));
 }
 
 configureRoutes(app);
