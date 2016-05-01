@@ -1,0 +1,4 @@
+node_modules
+npm-debug.log
+movies.backup.json
+.DS_Store

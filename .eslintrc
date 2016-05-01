@@ -1,0 +1,16 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["airbnb", "plugin:import/errors", "plugin:import/warnings"],
+  "rules": {
+    "consistent-return": 0,
+    "no-console": 0,
+  },
+  "ecmaFeatures": {
+    "restParams": true,
+    "experimentalObjectRestSpread": true
+  },
+  "globals": {
+    "describe": true,
+    "it": true
+  }
+}
