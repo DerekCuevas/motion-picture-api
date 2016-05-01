@@ -5,7 +5,7 @@ import compression from 'compression';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import chalk from 'chalk';
-import configureRoutes from './configureRoutes.js';
+import configureRoutes from './routes/configureRoutes.js';
 
 const app = express();
 

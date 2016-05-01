@@ -1,4 +1,4 @@
-import * as movies from './controllers/movies';
+import * as movies from '../controllers/movies';
 
 export default function configureRoutes(app) {
   app.get('/api/movies', movies.index);
