@@ -21,6 +21,7 @@ npm test
 
 More: see the npm [scripts](package.json#L6).
 
+<!--
 ## Features
 - CRUD routes around a single resource
 - Stateless and non-blocking request handling
@@ -34,6 +35,7 @@ More: see the npm [scripts](package.json#L6).
 - Image uploads (for post/put routes)
 - Add a related resource (eg. director -> movies, movie -> director)
 - Replace JSON file with an actual database
+-->
 
 ## Docs
 Using [httpie](https://github.com/jkbrzt/httpie) to show examples.
