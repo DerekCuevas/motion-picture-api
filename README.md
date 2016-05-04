@@ -21,22 +21,6 @@ npm test
 
 More: see the npm [scripts](package.json#L6).
 
-<!--
-## Features
-- CRUD routes around a single resource
-- Stateless and non-blocking request handling
-- JSON based requests and responses
-- Input validation with detailed error messages of (post/put JSON) with [Joi](https://github.com/hapijs/joi)
-- Unit Tests
-
-## Possible Future Additions
-- Authentication (specifically the post/put/delete routes)
-- Clustering
-- Image uploads (for post/put routes)
-- Add a related resource (eg. director -> movies, movie -> director)
-- Replace JSON file with an actual database
--->
-
 ## Docs
 Using [httpie](https://github.com/jkbrzt/httpie) to show examples.
 
@@ -69,7 +53,7 @@ Returns a movie by route parameter `id`. Will return `404` if not found and `200
 
 Example:
 ```sh
-http :3000/api/movies/41C2SMzXg # or some other real id
+http :3000/api/movies/4k0upQGul # or some other real id
 ```
 
 **POST - /api/movies**
@@ -87,7 +71,7 @@ Update any or all keys of a movie object by route parameter `id`. The body of th
 
 Example:
 ```sh
-http PUT :3000/api/movies/VkehBQMQx genre=horror
+http PUT :3000/api/movies/4k0upQGul genre=horror
 ```
 
 **DELETE - /api/movies/:id**
@@ -96,5 +80,5 @@ Delete a movie by route parameter `id`. Will return `404` if not found and `204`
 
 Example:
 ```sh
-http DELETE :3000/api/movies/VkehBQMQx
+http DELETE :3000/api/movies/4k0upQGul
 ```
