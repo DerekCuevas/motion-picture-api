@@ -54,7 +54,7 @@ Using [httpie](https://github.com/jkbrzt/httpie) to show examples.
 
 **GET - /api/movies**
 
-Returns a paginated set of results filtered by specified query parameters. Will return `200` on success. Uses the HTTP `link` headers for pagination.
+Returns a paginated set of results filtered by specified query parameters. Will return `200` on success. Uses the HTTP `link` header for pagination.
 
 Optional query params - `limit`, `p` (page number), `genres` (array format), `category`, `q` (query string)
 
