@@ -1,5 +1,5 @@
 # Motion Picture API
-A small, stateless, mock HTTP JSON API build with Node.js and Express. This API was pulled from here: [motion-picture](https://github.com/DerekCuevas/motion-picture).
+A small, stateless, mock HTTP JSON API build with Node.js and Express.
 
 ## To Run
 First `npm install`, Then:
