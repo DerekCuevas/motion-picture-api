@@ -83,7 +83,7 @@ http POST :3000/api/movies title=Dr.Strangelove genre=comedy description="Dr. St
 
 **PUT - /api/movies/:id**
 
-Update any or all keys of a movie object by route parameter `id`. The body of the HTTP request must be a JSON object that conforms to the [movie schema](models/movie.schema.js). The `id` cannot be changed and all keys are optional. Will return `422` if the HTTP body is invalid, '404' if not found and `200` on success.
+Update any or all keys of a movie object by route parameter `id`. The body of the HTTP request must be a JSON object that conforms to the [movie schema](models/movie.schema.js). The `id` cannot be changed and all keys are optional. Will return `422` if the HTTP body is invalid, `404` if not found and `200` on success.
 
 Example:
 ```sh
