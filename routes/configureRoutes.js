@@ -2,6 +2,7 @@ import * as movies from '../controllers/movies';
 
 export default function configureRoutes(app) {
   app.get('/api/movies', movies.index);
+  app.get('/api/movies/genres', movies.getGenres);
   app.get('/api/movies/:id', movies.get);
   app.post('/api/movies', movies.post);
   app.put('/api/movies/:id', movies.put);

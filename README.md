@@ -47,6 +47,15 @@ Example:
 http :3000/api/movies?q=star+wars&genres[0]=sci-fi+and+fantasy
 ```
 
+**GET - /api/movies/genres**
+
+Returns array of allowed genres. Will return `200` on success.
+
+Example:
+```sh
+http :3000/api/movies/genres
+```
+
 **GET - /api/movies/:id**
 
 Returns a movie by route parameter `id`. Will return `404` if not found and `200` on success.
