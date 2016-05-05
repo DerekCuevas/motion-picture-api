@@ -14,7 +14,7 @@ const movies = [
   { id: 'Vy0yun4Gg', title: 'Dr. Strangelove', genre: 'Comedy' },
 ];
 
-describe('API movies model', () => {
+describe('Movies Model', () => {
   describe('#getMovie()', () => {
     it('Should return movie indexed by id.', () => {
       const movie = {
