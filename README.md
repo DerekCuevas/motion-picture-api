@@ -44,7 +44,7 @@ Optional query params - `limit`, `p` (page number), `genres` (array format), `ca
 
 Example:
 ```sh
-http :3000/api/movies?q=star+wars&genres[0]=sci-fi+and+fantasy
+http ":3000/api/movies?q=star+wars&genres[0]=sci-fi+and+fantasy"
 ```
 
 **GET - /api/movies/genres**
