@@ -2,7 +2,7 @@ import Joi from 'joi';
 import pick from 'lodash.pick';
 import { DEFAULT_LIMIT, MAX_LIMIT, FIRST_PAGE } from '../config';
 import getLinks from '../util/getLinks';
-import { schema, genres } from '../models/movie.schema';
+import { schema } from '../models/movie.schema';
 
 import {
   queryMovies,
@@ -33,7 +33,7 @@ function getValidationErrors(error) {
 
 export function index(req, res) {
   const {
-    genres: gs,
+    genres,
     category,
     q,
     p = FIRST_PAGE,
@@ -41,7 +41,7 @@ export function index(req, res) {
   } = req.query;
 
   const params = {
-    gs,
+    genres,
     category,
     q,
     p: parseInt(p, 10),
@@ -52,7 +52,6 @@ export function index(req, res) {
     if (pages.next || pages.previous) {
       res.links(getLinks(req, pages));
     }
-
     res.json({ movies, total });
   }).catch(handleError(res));
 }
@@ -61,10 +60,6 @@ export function get({ params: { id } }, res) {
   query(getMovie, id).then(movie => {
     res.json(movie);
   }).catch(handleError(res, id));
-}
-
-export function getGenres(_, res) {
-  res.json(genres);
 }
 
 export function post({ body }, res) {
