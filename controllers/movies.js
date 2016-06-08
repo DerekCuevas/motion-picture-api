@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import { validate } from 'joi';
 import pick from 'lodash.pick';
 import { DEFAULT_LIMIT, MAX_LIMIT, FIRST_PAGE } from '../config';
 import getLinks from '../util/getLinks';
@@ -63,7 +63,7 @@ export function get({ params: { id } }, res) {
 }
 
 export function post({ body }, res) {
-  const { error, value: movie } = Joi.validate(body, schema, {
+  const { error, value: movie } = validate(body, schema, {
     abortEarly: false,
   });
 
@@ -82,7 +82,7 @@ export function post({ body }, res) {
 
 export function put({ params: { id }, body }, res) {
   const picked = pick(schema, Object.keys(body));
-  const { error, value: fields } = Joi.validate(body, picked, {
+  const { error, value: fields } = validate(body, picked, {
     abortEarly: false,
   });
 
